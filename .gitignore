@@ -187,3 +187,4 @@ __tests__/
 
 # Generated files
 *.generated.*
+sprint_docs/
