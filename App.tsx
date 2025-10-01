@@ -11,6 +11,7 @@ import { QRScannerScreen } from './src/screens/QRScannerScreen';
 import { PublicProfileScreen } from './src/screens/PublicProfileScreen';
 import { ChatScreen } from './src/screens/ChatScreen';         
 import { ChatListScreen } from './src/screens/ChatListScreen'; 
+import { StartParkingScreen } from './src/screens/StartParkingScreen';
 import { ParkOutHistoryScreen } from './src/screens/ParkOutHistoryScreen';
 import { ParkingHistoryScreen } from './src/screens/ParkingHistoryScreen';
 import { CarManagementScreen } from './src/screens/CarManagementScreen';
@@ -82,6 +83,17 @@ export default function App() {
             title: 'parQR',
             headerLeft: () => null,
             gestureEnabled: false
+          }}
+        />
+        <Stack.Screen
+          name="StartParking"
+          component={StartParkingScreen}
+          options={{
+            title: 'Start Parking',
+            headerStyle: {
+              backgroundColor: '#007AFF',
+            },
+            headerTintColor: '#fff',
           }}
         />
         <Stack.Screen 

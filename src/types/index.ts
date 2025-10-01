@@ -27,6 +27,9 @@ export type RootStackParamList = {
     carData: CarOwnerResponse;
   };
   QRScanner: undefined; 
+  StartParking: {
+    user: UserLookupResponse;
+  }
   PublicProfile: { 
     user?: UserLookupResponse | RegisterUserResponse;
     userCode: string;
@@ -122,6 +125,7 @@ export interface ParkingSession {
   latitude?: number;
   longitude?: number;
   note_location?: string;
+  public_message?: string;
 }
 
 export interface StartParkingRequest {
@@ -129,6 +133,7 @@ export interface StartParkingRequest {
   latitude?: number;
   longitude?: number;
   note_location?: string;
+  public_message?: string;
 }
 
 // Move Request Types
