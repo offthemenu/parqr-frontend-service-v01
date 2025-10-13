@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { CameraView, CameraType, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
+import { CameraView, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList, UserWithCarsResponse } from '../types';
+import { RootStackParamList } from '../types';
 import { UserService } from '../services/userService';
 import { qrScannerStyles } from '../styles/qrScannerStyles';
-import { UserActionModal } from '../components/UserActionModal';
+// import { UserActionModal } from '../components/UserActionModal';
 import { safeAlert } from '../utils/alertUtils';
 
 type QRScannerNavigationProp = StackNavigationProp<RootStackParamList, 'QRScanner'>;
@@ -16,8 +16,8 @@ export const QRScannerScreen: React.FC = () => {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [foundUser, setFoundUser] = useState<UserWithCarsResponse | null>(null);
+  // const [showModal, setShowModal] = useState<boolean>(false);
+  // const [foundUser, setFoundUser] = useState<UserWithCarsResponse | null>(null);
 
   const extractUserCodeFromQR = (data: string): string | null => {
     try {
@@ -81,9 +81,13 @@ export const QRScannerScreen: React.FC = () => {
       // Look up user by user code
       const userData = await UserService.lookupUser(userCode);
       
-      // Show modal instead of alert
-      setFoundUser(userData);
-      setShowModal(true);
+      console.log("User found, navigating to PublicProfile")
+
+      // Navigate Directly to PublicProfile
+      navigation.navigate("PublicProfile", {
+        userCode: userData.user_code,
+        userData: userData,
+      });
 
     } catch (error: any) {
       console.error('QR scan error:', error);
@@ -113,49 +117,6 @@ export const QRScannerScreen: React.FC = () => {
       );
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const resetScanner = () => {
-    setScanned(false);
-    setIsLoading(false);
-    setShowModal(false);
-    setFoundUser(null);
-  };
-
-  const handleModalClose = () => {
-    setShowModal(false);
-    setFoundUser(null);
-  };
-
-  const handleViewProfile = () => {
-    if (foundUser) {
-      setShowModal(false);
-      navigation.navigate('PublicProfile', { 
-        userCode: foundUser.user_code,
-        userData: foundUser
-      });
-    }
-  };
-
-  const handleSendMessage = () => {
-    if (foundUser) {
-      setShowModal(false);
-      navigation.navigate('Chat', { 
-        recipientUserCode: foundUser.user_code,
-        recipientDisplayName: foundUser.profile_display_name || foundUser.user_code
-      });
-    }
-  };
-
-  const handleRequestCarMove = () => {
-    if (foundUser) {
-      setShowModal(false);
-      navigation.navigate('Chat', {
-        recipientUserCode: foundUser.user_code,
-        recipientDisplayName: foundUser.profile_display_name || foundUser.user_code,
-        sendMoveCarRequest: true
-      });
     }
   };
 
@@ -216,7 +177,10 @@ export const QRScannerScreen: React.FC = () => {
           {scanned && (
             <TouchableOpacity
               style={qrScannerStyles.scanAgainButton}
-              onPress={resetScanner}
+              onPress={() => {
+                setScanned(false);
+                setIsLoading(false);
+              }}
               disabled={isLoading}
             >
               <Text style={qrScannerStyles.scanAgainButtonText}>
@@ -226,19 +190,6 @@ export const QRScannerScreen: React.FC = () => {
           )}
         </View>
       </View>
-
-      {/* User Action Modal */}
-      {foundUser && (
-        <UserActionModal
-          visible={showModal}
-          userCode={foundUser.user_code}
-          onClose={handleModalClose}
-          onViewProfile={handleViewProfile}
-          onSendMessage={handleSendMessage}
-          onRequestCarMove={handleRequestCarMove}
-          onScanAgain={resetScanner}
-        />
-      )}
     </View>
   );
 };
