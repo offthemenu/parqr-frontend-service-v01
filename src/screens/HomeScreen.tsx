@@ -15,6 +15,7 @@ import { ParkingService } from '../services/parkingService';
 import { UserService } from '../services/userService';
 import { ParkingSessionCard } from '../components/home/ParkingSessionCard';
 import { ParkingSession } from '../types';
+import { StartParkingSection } from '../components/home/StartParkingSection';
 import { ParkOutRequestsSection } from '../components/home/ParkOutRequestsSection';
 import { ParkingHistorySection } from '../components/home/ParkingHistorySection';
 import { RegisteredCarPanel } from '../components/home/RegisteredCarPanel';
@@ -106,6 +107,13 @@ export const HomeScreen: React.FC = () => {
           // Get updated user data with cars
           const updatedUser = await UserService.lookupUser(user.user_code);
           setCurrentUser(updatedUser);
+
+          const activeSessions = await ParkingService.getActiveSessions();
+          if (activeSessions.length > 0) {
+            setActiveSession(activeSessions[0]);
+          } else {
+            setActiveSession(null); // Clear ir no active session
+          }
         } catch (error) {
           console.error("Error refreshing user data:", error);
         }
@@ -114,31 +122,55 @@ export const HomeScreen: React.FC = () => {
     }, [user.user_code])
   );
 
-  // parking session handlers
-  const handleStartParking = async () => {
-    // Check if user has cars property (UserLookupResponse vs RegisterUserResponse)
-    if (!('cars' in currentUser) || !currentUser.cars || currentUser.cars.length === 0) {
-      Alert.alert('No Cars', 'Please register a car before starting a parking session.');
+  const handleNavigateToStartParking = () => {
+    // User Car Registry check
+    if (!("cars" in currentUser) || !currentUser.cars || currentUser.cars.length === 0) {
+      Alert.alert(
+        "No Cars Registered",
+        "Please register a car before starting a parking session.",
+        [
+          {
+            text: "Register Now",
+            onPress: () => navigation.navigate("CarRegistration", { user: currentUser })
+          },
+          {
+            text: "Cancel",
+            style: "cancel"
+          }
+        ]
+      );
       return;
     }
 
-    // For now, use the first car. In a full implementation, show car selection
-    const carId = currentUser.cars[0].id;
-
-    setIsLoadingParking(true);
-
-    try {
-      const parkingSession = await ParkingService.startParkingSession({ car_id: carId });
-
-      setActiveSession(parkingSession);
-      setRefreshTrigger(prev => prev + 1); // Refresh parking history
-      Alert.alert('Parking Started', 'Your parking session has begun.');
-    } catch (error) {
-      Alert.alert('Error', 'Unable to start parking session. Please try again.');
-    } finally {
-      setIsLoadingParking(false);
-    }
+    navigation.navigate("StartParking", { user: currentUser });
   };
+
+  // DEPRECATED - parking session handler - DEPRECATED
+
+  // const handleStartParking = async () => {
+  //   // Check if user has cars property (UserLookupResponse vs RegisterUserResponse)
+  //   if (!('cars' in currentUser) || !currentUser.cars || currentUser.cars.length === 0) {
+  //     Alert.alert('No Cars', 'Please register a car before starting a parking session.');
+  //     return;
+  //   }
+
+  //   // For now, use the first car. In a full implementation, show car selection
+  //   const carId = currentUser.cars[0].id;
+
+  //   setIsLoadingParking(true);
+
+  //   try {
+  //     const parkingSession = await ParkingService.startParkingSession({ car_id: carId });
+
+  //     setActiveSession(parkingSession);
+  //     setRefreshTrigger(prev => prev + 1); // Refresh parking history
+  //     Alert.alert('Parking Started', 'Your parking session has begun.');
+  //   } catch (error) {
+  //     Alert.alert('Error', 'Unable to start parking session. Please try again.');
+  //   } finally {
+  //     setIsLoadingParking(false);
+  //   }
+  // };
 
   const handleSessionEnded = () => {
     setActiveSession(null);
@@ -212,6 +244,11 @@ export const HomeScreen: React.FC = () => {
         )}
 
         {!activeSession && (
+          <StartParkingSection onPress={handleNavigateToStartParking} />
+        )}
+
+        {/* Deprecated! */}
+        {/* {!activeSession && (
           <View style={homeScreenStyles.parkingSection}>
             <ActionButton
               title="🚗 Start Parking"
@@ -219,7 +256,7 @@ export const HomeScreen: React.FC = () => {
               variant="secondary"
             />
           </View>
-        )}
+        )} */}
 
         {/* ParkOutRequests - Move requests (prominent position) */}
         <ParkOutRequestsSection
