@@ -21,19 +21,6 @@ export class ChatService {
   }
 
   /**
-   * Send a move car request to another user
-   */
-  static async sendMoveCarRequest(userCode: string): Promise<ChatMessageResponse> {
-    try {
-      const response = await apiClient.post(`/v01/chat/move-car-request/${userCode}`);
-      return response.data;
-    } catch (error: any) {
-      console.error('Send move car request error:', error.response?.data || error.message);
-      throw error;
-    }
-  }
-
-  /**
    * Get all conversations for current user
    */
   static async getConversations(): Promise<ChatConversationResponse[]> {

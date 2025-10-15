@@ -6,6 +6,7 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { publicProfileStyles } from '../styles/publicProfileStyles';
 import { ChatService } from '../services/chatService';
+import { MoveRequestService } from '../services/moveRequestService';
 import { ParkingService } from '../services/parkingService';
 import { ParkingSession } from '../types';
 import { formatLocalTime, calculateParkingDuration } from '../utils/timeUtils';
@@ -38,35 +39,56 @@ export const PublicProfileScreen: React.FC = () => {
   };
 
   const handleRequestMovecar = async () => {
-    setIsLoading(true);
-
-    try {
-      // Send move car request through chat system
-      await ChatService.sendMoveCarRequest(userCode);
-
-      Alert.alert(
-        'Request Sent',
-        'Your request to move the car has been sent.',
-        [
-          {
-            text: 'Open Chat',
-            onPress: () => {
-              navigation.navigate('Chat', {
-                recipientUserCode: userCode,
-                recipientDisplayName: userData.profile_display_name || userCode,
-                sendMoveCarRequest: false // Since we already sent it
-              });
+    Alert.prompt(
+      "Confirm License Plate",
+      "Enter the license plate of the car you want to request to move:",
+      [
+        {
+          text: "Cancel",
+          style: 'cancel'
+        },
+        {
+          text: "Send Request",
+          onPress: async (licensePlate?: string) => {
+            if (!licensePlate || licensePlate.trim().length === 0) {
+              Alert.alert("Error", "Please enter a license plate");
+              return;
             }
-          },
-          { text: 'OK' }
-        ]
-      );
-    } catch (error) {
-      Alert.alert('Error', 'Unable to send request. Please check your connection.');
-      console.error('Move car request error:', error);
-    } finally {
-      setIsLoading(false);
-    }
+
+            setIsLoading(true);
+
+            try {
+              await MoveRequestService.createRequest(
+                userCode,
+                licensePlate.trim().toUpperCase()
+              );
+
+              Alert.alert(
+                "Request Sent",
+                "Your request to move the car has been sent to the vehicle owner.",
+                [
+                  {
+                    text: "OK",
+                    onPress: () => navigation.goBack()
+                  }
+                ]
+              );
+            } catch (error: any) {
+              console.error("Move car request error:", error);
+              Alert.alert(
+                "Error",
+                error.response?.data?.detail || "Failed to send move request. Please try again."
+              );
+            } finally {
+              setIsLoading(false);
+            }
+          }
+        }
+      ],
+      "plain-text",
+      "",
+      "default"
+    );
   };
 
   const fetchParkingHistory = async () => {

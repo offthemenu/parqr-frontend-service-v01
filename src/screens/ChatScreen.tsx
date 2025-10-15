@@ -27,7 +27,7 @@ export const ChatScreen: React.FC = () => {
   const navigation = useNavigation<ChatScreenNavigationProp>();
   const flatListRef = useRef<FlatList>(null);
   
-  const { recipientUserCode, recipientDisplayName, sendMoveCarRequest } = route.params;
+  const { recipientUserCode, recipientDisplayName } = route.params;
   
   const [currentUserCode, setCurrentUserCode] = useState<string>('');
   const [isInitializing, setIsInitializing] = useState(true);
@@ -61,22 +61,6 @@ export const ChatScreen: React.FC = () => {
     enabled: !isInitializing && !!currentUserCode,
     pollInterval: 15000
   });
-
-  // Send move car request if specified
-  useEffect(() => {
-    if (sendMoveCarRequest && currentUserCode) {
-      const sendMoveRequest = async () => {
-        try {
-          await ChatService.sendMoveCarRequest(recipientUserCode);
-          // The request message will appear through polling
-        } catch (error) {
-          Alert.alert('Error', 'Failed to send move car request');
-        }
-      };
-      
-      sendMoveRequest();
-    }
-  }, [sendMoveCarRequest, recipientUserCode, currentUserCode]);
 
   // Mark messages as read when screen is focused
   useFocusEffect(
