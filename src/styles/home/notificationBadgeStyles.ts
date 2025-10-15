@@ -1,23 +1,25 @@
 import { StyleSheet } from 'react-native';
+import { colors, borderRadius, typography, shadows } from '../../theme/tokens';
 
 export const notificationBadgeStyles = StyleSheet.create({
   container: {
     position: 'absolute',
     top: -6,
     right: -6,
-    backgroundColor: '#FF3B30',
-    borderRadius: 10,
+    backgroundColor: colors.notification.error,
+    borderRadius: borderRadius.md,
     minWidth: 20,
     height: 20,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 4,
     borderWidth: 2,
-    borderColor: 'white',
+    borderColor: colors.surface.base,
+    ...shadows.notification,
   },
   text: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: '600',
+    color: colors.text.white,
+    fontSize: typography.size.sm,
+    fontWeight: typography.weight.semibold,
   },
 });

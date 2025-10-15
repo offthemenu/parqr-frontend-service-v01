@@ -6,6 +6,11 @@ import { useFeatureGating } from '../hooks/useFeatureGating';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
+import { BlurView } from 'expo-blur';
+import * as Haptics from 'expo-haptics';
+import { Ionicons } from '@expo/vector-icons';
+import { PrimaryGradient } from '../theme/gradients';
+import { colors } from '../theme/tokens';
 // import { QRCodeDisplay } from '../components/QRCodeDisplay'; // Commented out - QR code display moved to separate screen
 import { ActionButton } from '../components/ActionButton';
 import { homeScreenStyles } from '../styles/homeScreenStyles';
@@ -181,7 +186,7 @@ export const HomeScreen: React.FC = () => {
     <View style={homeScreenStyles.container}>
       <ScrollView style={homeScreenStyles.scrollView}>
         {/* Header Section */}
-        <View style={homeScreenStyles.header}>
+        <PrimaryGradient style={homeScreenStyles.header}>
           <View style={homeScreenStyles.headerContent}>
             <Text style={homeScreenStyles.welcomeText}>
               Welcome back, {'profile_display_name' in user ? (user.profile_display_name || user.user_code) : user.user_code}!
@@ -190,24 +195,42 @@ export const HomeScreen: React.FC = () => {
             {/* Chat and Profile buttons in header */}
             <View style={homeScreenStyles.headerButtons}>
               {canAccessChat && (
-                <TouchableOpacity
+                <BlurView
+                  intensity={20}
+                  tint="light"
                   style={homeScreenStyles.headerButton}
-                  onPress={handleViewChats}
                 >
-                  <Text style={homeScreenStyles.headerButtonText}>💬</Text>
-                  <NotificationBadge count={totalUnreadCount} />
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      handleViewChats();
+                    }}
+                    style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}
+                  >
+                    <Ionicons name="chatbubble" size={20} color={colors.text.white} />
+                    <NotificationBadge count={totalUnreadCount} />
+                  </TouchableOpacity>
+                </BlurView>
               )}
 
-              <TouchableOpacity
+              <BlurView
+                intensity={20}
+                tint="light"
                 style={homeScreenStyles.headerButton}
-                onPress={handleViewProfile}
               >
-                <Text style={homeScreenStyles.headerButtonText}>👤</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    handleViewProfile();
+                  }}
+                  style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}
+                >
+                  <Ionicons name="person" size={20} color={colors.text.white} />
+                </TouchableOpacity>
+              </BlurView>
             </View>
           </View>
-        </View>
+        </PrimaryGradient>
 
         {/* RegisteredCarPanel - Active car details */}
         {'cars' in currentUser && currentUser.cars && currentUser.cars.length > 0 ? (
@@ -292,10 +315,13 @@ export const HomeScreen: React.FC = () => {
       {/* Floating QR Scan Button */}
       <TouchableOpacity
         style={homeScreenStyles.floatingButton}
-        onPress={handleQRScan}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          handleQRScan();
+        }}
         activeOpacity={0.8}
       >
-        <Text style={homeScreenStyles.floatingButtonText}>Scan</Text>
+        <Ionicons name="qr-code-outline" size={28} color={colors.text.white} />
       </TouchableOpacity>
     </View>
   );
