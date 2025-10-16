@@ -40,8 +40,11 @@ export const HomeScreen: React.FC = () => {
     enabled: canAccessChat, // Only enable for premium users
     pollInterval: 30000
   })
-  // Move request notifications hook
-  const { moveRequestsUnreadCount } = useMoveRequestNotifications(user.user_code);
+  // Move request notifications hook with polling
+  const { moveRequestsUnreadCount, refreshMoveRequestsCount } = useMoveRequestNotifications(
+    user.user_code,
+    { pollInterval: 30000 } // Poll every 30 seconds
+  );
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
   // Navigation handlers
@@ -101,7 +104,8 @@ export const HomeScreen: React.FC = () => {
     React.useCallback(() => {
       console.log('🏠 HomeScreen focused - refreshing notifications');
       refreshUnreadCount();
-    }, [refreshUnreadCount])
+      refreshMoveRequestsCount(); // Also refresh move requests
+    }, [refreshUnreadCount, refreshMoveRequestsCount])
   );
 
   // Refresh user data
