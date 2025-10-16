@@ -2,11 +2,12 @@ import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { NotificationBadge } from "./NotificationBadge";
 import { parkOutRequestsSectionStyles } from "../../styles/home/parkOutRequestsSectionStyles";
+import * as Haptics from 'expo-haptics';
 
 interface ParkOutRequestsSectionProps {
     userCode: string;
     unreadCount: number;
-    onPress: () => void; // ADD this prop
+    onPress: () => void;
 }
 
 export const ParkOutRequestsSection: React.FC<ParkOutRequestsSectionProps> = ({
@@ -17,7 +18,10 @@ export const ParkOutRequestsSection: React.FC<ParkOutRequestsSectionProps> = ({
     return (
         <TouchableOpacity
             style={parkOutRequestsSectionStyles.container}
-            onPress={onPress}
+            onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onPress();
+            }}
             activeOpacity={0.7}
         >
             <View style={parkOutRequestsSectionStyles.header}>

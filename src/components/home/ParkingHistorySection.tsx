@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { ParkingService } from "../../services/parkingService";
 import { ParkingSession } from "../../types";
 import { parkingHistorySectionStyles } from "../../styles/home/parkingHistorySectionStyles";
 import { formatLocalTime, calculateParkingDuration } from "../../utils/timeUtils";
+import { colors } from "../../theme/tokens";
 
 interface ParkingHistorySectionProps {
     userCode: string;
@@ -52,7 +55,10 @@ export const ParkingHistorySection: React.FC<ParkingHistorySectionProps> = ({
         return (
             <TouchableOpacity
                 style={parkingHistorySectionStyles.container}
-                onPress={onPress}
+                onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    onPress();
+                }}
                 activeOpacity={0.7}
             >
                 <View style={parkingHistorySectionStyles.header}>
@@ -69,7 +75,10 @@ export const ParkingHistorySection: React.FC<ParkingHistorySectionProps> = ({
     return (
         <TouchableOpacity
             style={parkingHistorySectionStyles.container}
-            onPress={onPress}
+            onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onPress();
+            }}
             activeOpacity={0.7}
         >
             <View style={parkingHistorySectionStyles.header}>
@@ -91,9 +100,12 @@ export const ParkingHistorySection: React.FC<ParkingHistorySectionProps> = ({
                     </View>
 
                     {session.note_location && (
-                        <Text style={parkingHistorySectionStyles.location}>
-                            📍 {session.note_location}
-                        </Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+                            <Ionicons name="location" size={16} color={colors.primary.start} style={{ marginRight: 4 }} />
+                            <Text style={parkingHistorySectionStyles.location}>
+                                {session.note_location}
+                            </Text>
+                        </View>
                     )}
 
                     {!session.end_time && (

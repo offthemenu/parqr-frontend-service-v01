@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { TouchableOpacity, View, Text, Alert } from "react-native";
+import * as Haptics from 'expo-haptics';
 import { ParkingService } from "../../services/parkingService";
 import { parkingSessionCardStyles } from "../../styles/home/parkingSessionCardStyles";
 import { ParkingSession } from "../../types";
@@ -36,6 +37,7 @@ export const ParkingSessionCard: React.FC<ParkingSessionCardProps> = ({
     }, [session.start_time]);
 
     const handleEndSession = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
         Alert.alert(
             "End Parking Session",
             "Are you sure you want to end this parking session?",
@@ -51,15 +53,18 @@ export const ParkingSessionCard: React.FC<ParkingSessionCardProps> = ({
                             const result = await ParkingService.endParkingSession(session.id);
 
                             if (result) {
+                                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
                                 Alert.alert(
                                     "Session Ended",
                                     `Parking session ended after ${currentDuration}`,
                                     [{ text: "OK", onPress: onSessionEnded }]
                                 );
                             } else {
+                                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
                                 Alert.alert("Error", result || "Failed to end session");
                             }
                         } catch (error) {
+                            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
                             Alert.alert("Error", "Unable to end session. Please try again.");
                         } finally {
                             setIsEnding(false);

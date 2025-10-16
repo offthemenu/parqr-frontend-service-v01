@@ -1,20 +1,14 @@
 import { StyleSheet } from 'react-native';
+import { colors, spacing, borderRadius, typography, shadows } from '../../theme/tokens';
 
 export const parkOutRequestsSectionStyles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
-    marginHorizontal: 20,
-    marginVertical: 8,
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-    elevation: 3,
+    backgroundColor: colors.surface.base,
+    marginHorizontal: spacing.lg,
+    marginVertical: spacing.sm,
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    ...shadows.medium,
   },
   header: {
     flexDirection: 'row',
@@ -22,26 +16,27 @@ export const parkOutRequestsSectionStyles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1C1C1E',
+    fontSize: typography.size.lg,
+    fontWeight: typography.weight.bold,
+    color: colors.text.primary,
   },
   badge: {
-    backgroundColor: '#007AFF',
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    backgroundColor: colors.primary.start,
+    borderRadius: borderRadius.md,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
     minWidth: 24,
     alignItems: 'center',
+    ...shadows.small,
   },
   badgeText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
+    color: colors.text.white,
+    fontSize: typography.size.sm,
+    fontWeight: typography.weight.semibold,
   },
   arrow: {
-    fontSize: 20,
-    color: '#C7C7CC',
-    fontWeight: '300',
+    fontSize: typography.size.xl,
+    color: colors.border.medium,
+    fontWeight: typography.weight.normal,
   },
 });
