@@ -1,6 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View, Text } from "react-native";
 import { startParkingSectionStyles } from "../../styles/home/startParkingSectionStyles";
+import * as Haptics from 'expo-haptics';
 
 interface StartParkingSectionProps {
     onPress: () => void;
@@ -10,7 +11,10 @@ export const StartParkingSection: React.FC<StartParkingSectionProps> = ({ onPres
     return (
         <TouchableOpacity
             style={startParkingSectionStyles.container}
-            onPress={onPress}
+            onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                onPress();
+            }}
             activeOpacity={0.7}
         >
             <View style={startParkingSectionStyles.content}>

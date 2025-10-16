@@ -1,58 +1,52 @@
 import { StyleSheet } from "react-native";
+import { colors, spacing, borderRadius, typography, shadows } from '../../theme/tokens';
 
 export const startParkingSectionStyles = StyleSheet.create({
     container: {
-        backgroundColor: '#fff',
-        borderRadius: 12,
-        marginHorizontal: 20,
-        marginVertical: 10,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        backgroundColor: colors.surface.base,
+        borderRadius: borderRadius.md,
+        marginHorizontal: spacing.lg,
+        marginVertical: spacing.sm,
+        ...shadows.medium,
     },
     content: {
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 16,
+        padding: spacing.md,
     },
     iconContainer: {
         width: 48,
         height: 48,
-        borderRadius: 24,
+        borderRadius: borderRadius.full,
         backgroundColor: '#F0F7FF',
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 16,
+        marginRight: spacing.md,
     },
     icon: {
-        fontSize: 24,
+        fontSize: typography.size.xxl,
     },
     textContainer: {
         flex: 1,
     },
     title: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#333',
-        marginBottom: 4,
+        fontSize: typography.size.base,
+        fontWeight: typography.weight.semibold,
+        color: colors.text.primary,
+        marginBottom: spacing.xs,
     },
     subtitle: {
-        fontSize: 14,
-        color: '#666',
+        fontSize: typography.size.md,
+        color: colors.text.secondary,
     },
     arrowContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        marginLeft: 8,
+        marginLeft: spacing.sm,
     },
     arrow: {
-        fontSize: 32,
-        color: '#007AFF',
-        fontWeight: '300',
+        fontSize: typography.size.display,
+        color: colors.primary.start,
+        fontWeight: typography.weight.normal,
     },
 });

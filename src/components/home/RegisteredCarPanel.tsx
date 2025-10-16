@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { CarResponse } from "../../types";
 import { registeredCarPanelStyles } from "../../styles/home/registeredCarPanelStyles";
+import * as Haptics from 'expo-haptics';
 
 interface RegisteredCarPanelProps {
     car: CarResponse;
@@ -19,7 +20,10 @@ export const RegisteredCarPanel: React.FC<RegisteredCarPanelProps> = ({
                 {onManageCars && (
                     <TouchableOpacity
                         style={registeredCarPanelStyles.manageButton}
-                        onPress={onManageCars}
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            onManageCars();
+                        }}
                     >
                         <Text style={registeredCarPanelStyles.manageButtonText}>Manage</Text>
                     </TouchableOpacity>
