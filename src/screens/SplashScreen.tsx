@@ -6,6 +6,7 @@ import { RootStackParamList } from '../types';
 import { AuthService } from '../services/authService';
 import { UserService } from '../services/userService';
 import { splashScreenStyles } from '../styles/splashScreenStyles';
+import { PrimaryGradient } from '../theme/gradients';
 
 type SplashScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Splash'>;
 
@@ -67,17 +68,17 @@ export const SplashScreen: React.FC = () => {
   };
 
   return (
-    <View style={splashScreenStyles.container}>
+    <PrimaryGradient style={splashScreenStyles.container}>
       <View style={splashScreenStyles.logoContainer}>
         <View style={splashScreenStyles.logoPlaceholder}>
           <Text style={splashScreenStyles.logoText}>parQR</Text>
         </View>
         <Text style={splashScreenStyles.tagline}>Smart Parking Made Simple</Text>
       </View>
-      
+
       <View style={splashScreenStyles.loadingContainer}>
         <Text style={splashScreenStyles.loadingText}>Loading...</Text>
       </View>
-    </View>
+    </PrimaryGradient>
   );
 };

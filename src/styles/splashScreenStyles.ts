@@ -1,12 +1,12 @@
 import { StyleSheet } from 'react-native';
+import { colors, spacing, borderRadius, typography, shadows } from '../theme/tokens';
 
 export const splashScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#007AFF',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 100,
+    paddingVertical: spacing.xxxl * 1.5,
   },
   logoContainer: {
     flex: 1,
@@ -16,28 +16,29 @@ export const splashScreenStyles = StyleSheet.create({
   logoPlaceholder: {
     width: 120,
     height: 120,
-    backgroundColor: 'white',
-    borderRadius: 60,
+    backgroundColor: colors.surface.base,
+    borderRadius: borderRadius.full,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: spacing.lg,
+    ...shadows.large,
   },
   logoText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#007AFF',
+    fontSize: typography.size.xxxl + 4,
+    fontWeight: typography.weight.bold,
+    color: colors.primary.start,
   },
   tagline: {
-    fontSize: 18,
-    color: 'white',
-    fontWeight: '300',
+    fontSize: typography.size.lg,
+    color: colors.text.white,
+    fontWeight: typography.weight.normal,
   },
   loadingContainer: {
-    marginBottom: 50,
+    marginBottom: spacing.xxxl + spacing.md,
   },
   loadingText: {
-    color: 'white',
-    fontSize: 16,
+    color: colors.text.white,
+    fontSize: typography.size.base,
     opacity: 0.8,
   },
 });

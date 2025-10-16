@@ -8,13 +8,14 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { UserService } from '../services/userService';
 import { AuthService } from '../services/authService';
 import { RegisterUserResponse, KOREAN_PHONE_CONFIG } from '../types';
-import { 
-  validatePhoneNumber, 
-  formatPhoneNumber, 
-  formatPhoneForAPI 
+import {
+  validatePhoneNumber,
+  formatPhoneNumber,
+  formatPhoneForAPI
 } from '../utils/validation';
 import { PhoneNumberInput } from '../components/PhoneNumberInput';
 import { RegistrationSuccess } from '../components/RegistrationSuccess';
@@ -40,28 +41,32 @@ export const RegisterScreen: React.FC = () => {
     const phoneValidation = validatePhoneNumber(phoneNumber, { countryCode: selectedCountry });
 
     if (!phoneValidation.isValid) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
       Alert.alert('Invalid Phone Number', phoneValidation.message || 'Please enter a valid phone number');
       return;
     }
 
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setIsLoading(true);
 
     try {
       // Format phone number for API call (raw format: 010XXXXXXXX)
       const apiFormattedPhone = formatPhoneForAPI(phoneNumber, selectedCountry);
       const response = await UserService.registerUser(apiFormattedPhone, KOREAN_PHONE_CONFIG.COUNTRY_ISO);
-      
+
       // Store user code in AsyncStorage
       await AuthService.storeUserCode(response.user_code);
-      
+
       setUserData(response);
       setShowQR(true);
-      
+
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       Alert.alert(
-        'Registration Successful!', 
+        'Registration Successful!',
         `Welcome! Your user code is: ${response.user_code}`
       );
     } catch (error: any) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       Alert.alert('Registration Failed', error.message);
     } finally {
       setIsLoading(false);

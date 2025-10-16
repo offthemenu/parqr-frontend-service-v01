@@ -11,11 +11,13 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import * as Haptics from 'expo-haptics';
 import { RootStackParamList } from '../types';
 import { UserService } from '../services/userService';
 import { AuthService } from '../services/authService';
 import { ActionButton } from '../components/ActionButton';
 import { signInScreenStyles } from '../styles/signInScreenStyles';
+import { colors } from '../theme/tokens';
 
 type SignInScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignIn'>;
 
@@ -30,10 +32,12 @@ export const SignInScreen: React.FC = () => {
 
   const handleSignIn = async () => {
     if (!userCode.trim()) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
       Alert.alert('Invalid Input', 'Please enter your user code');
       return;
     }
 
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setIsLoading(true);
 
     try {
@@ -44,6 +48,7 @@ export const SignInScreen: React.FC = () => {
       await AuthService.storeUserCode(userData.user_code);
       await AuthService.storeUserData(userData);
 
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       Alert.alert(
         'Welcome Back!',
         `Signed in successfully as ${userData.user_code}`,
@@ -81,6 +86,7 @@ export const SignInScreen: React.FC = () => {
         }
       }
 
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       Alert.alert('Sign-In Failed', errorMessage);
     } finally {
       setIsLoading(false);
@@ -105,7 +111,7 @@ export const SignInScreen: React.FC = () => {
             value={userCode}
             onChangeText={setUserCode}
             placeholder="Enter your user code"
-            placeholderTextColor="#999"
+            placeholderTextColor={colors.text.tertiary}
             autoCapitalize="none"
             autoCorrect={false}
             editable={!isLoading}
