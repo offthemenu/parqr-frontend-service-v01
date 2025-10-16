@@ -14,6 +14,7 @@ import {
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
+import * as Haptics from 'expo-haptics';
 import {
   RootStackParamList,
   CarRegistrationRequest,
@@ -23,6 +24,7 @@ import {
 import { CarService } from '../services/carService';
 import { AuthService } from '../services/authService';
 import { carRegistrationStyles } from '../styles/carRegistrationStyles';
+import { colors } from '../theme/tokens';
 
 type CarRegistrationScreenRouteProp = RouteProp<RootStackParamList, 'CarRegistration'>;
 type CarRegistrationScreenNavigationProp = StackNavigationProp<RootStackParamList, 'CarRegistration'>;
@@ -87,8 +89,9 @@ export const CarRegistrationScreen: React.FC = () => {
   };
 
   const handleBrandSelection = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const options = ['Cancel', ...KOREAN_CAR_BRANDS];
-    
+
     if (Platform.OS === 'ios') {
       ActionSheetIOS.showActionSheetWithOptions(
         {
@@ -98,6 +101,7 @@ export const CarRegistrationScreen: React.FC = () => {
         },
         (buttonIndex) => {
           if (buttonIndex > 0) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             setSelectedBrand(KOREAN_CAR_BRANDS[buttonIndex - 1]);
             if (errors.brand) {
               setErrors(prev => ({ ...prev, brand: '' }));
@@ -115,6 +119,7 @@ export const CarRegistrationScreen: React.FC = () => {
           ...KOREAN_CAR_BRANDS.map(brand => ({
             text: brand,
             onPress: () => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               setSelectedBrand(brand);
               if (errors.brand) {
                 setErrors(prev => ({ ...prev, brand: '' }));
@@ -128,9 +133,11 @@ export const CarRegistrationScreen: React.FC = () => {
 
   const handleCarRegistration = async () => {
     if (!validateForm()) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
       return;
     }
 
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setIsLoading(true);
 
     try {
@@ -142,6 +149,7 @@ export const CarRegistrationScreen: React.FC = () => {
 
       const registeredCar = await CarService.registerCar(carData);
 
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       Alert.alert(
         'Car Registered Successfully!',
         `${registeredCar.car_brand} ${registeredCar.car_model} (${registeredCar.license_plate}) has been added to your account.`,
@@ -171,6 +179,7 @@ export const CarRegistrationScreen: React.FC = () => {
         }
       }
 
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       Alert.alert('Registration Failed', errorMessage);
     } finally {
       setIsLoading(false);
@@ -178,6 +187,7 @@ export const CarRegistrationScreen: React.FC = () => {
   };
 
   const handleSkipForNow = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     Alert.alert(
       'Skip Car Registration?',
       'You can add your car later from the profile screen.',
@@ -219,7 +229,7 @@ export const CarRegistrationScreen: React.FC = () => {
               value={licensePlate}
               onChangeText={handleLicensePlateChange}
               placeholder="123가4567"
-              placeholderTextColor="#999"
+              placeholderTextColor={colors.text.tertiary}
               autoCapitalize="none"
               maxLength={8}
             />
@@ -267,7 +277,7 @@ export const CarRegistrationScreen: React.FC = () => {
                 }
               }}
               placeholder="e.g., Sonata, Camry, 320i"
-              placeholderTextColor="#999"
+              placeholderTextColor={colors.text.tertiary}
               autoCapitalize="words"
             />
             {errors.model && (

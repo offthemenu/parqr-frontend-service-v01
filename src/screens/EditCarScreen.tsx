@@ -3,9 +3,11 @@ import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from "reac
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import * as Haptics from 'expo-haptics';
 import { CarService } from "../services/carService";
 import { CarOwnerResponse, RootStackParamList, KOREAN_CAR_BRANDS } from "../types";
 import { editCarStyles } from "../styles/editCarStyles";
+import { colors } from "../theme/tokens";
 
 type EditCarRouteProp = RouteProp<RootStackParamList, "EditCar">;
 type EditCarNavigationProp = StackNavigationProp<RootStackParamList, "EditCar">;
@@ -22,10 +24,12 @@ export const EditCarScreen: React.FC = () => {
 
     const handleUpdateCar = async () => {
         if (!licensePlate.trim() || !carBrand.trim() || !carModel.trim()) {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
             Alert.alert("Error", "Please fill in all fields");
             return;
         }
 
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         setIsSubmitting(true);
         try {
             await CarService.updateCar(carData.id, {
@@ -34,6 +38,7 @@ export const EditCarScreen: React.FC = () => {
                 car_model: carModel.trim()
             });
 
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             Alert.alert("Success", "Car updated successfully", [
                 {
                     text: "OK",
@@ -41,6 +46,7 @@ export const EditCarScreen: React.FC = () => {
                 }
             ]);
         } catch (error: any) {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
             Alert.alert("Eeeek!!", error.message || "Failed to update car");
         } finally {
             setIsSubmitting(false);
@@ -59,6 +65,7 @@ export const EditCarScreen: React.FC = () => {
                         value={licensePlate}
                         onChangeText={setLicensePlate}
                         placeholder="Enter license plate"
+                        placeholderTextColor={colors.text.tertiary}
                         autoCapitalize="characters"
                     />
                 </View>
@@ -70,6 +77,7 @@ export const EditCarScreen: React.FC = () => {
                         value={carBrand}
                         onChangeText={setCarBrand}
                         placeholder="Enter car brand"
+                        placeholderTextColor={colors.text.tertiary}
                     />
                 </View>
 
@@ -80,6 +88,7 @@ export const EditCarScreen: React.FC = () => {
                         value={carModel}
                         onChangeText={setCarModel}
                         placeholder="Enter car model"
+                        placeholderTextColor={colors.text.tertiary}
                     />
                 </View>
 
@@ -98,7 +107,10 @@ export const EditCarScreen: React.FC = () => {
 
                 <TouchableOpacity
                     style={editCarStyles.cancelButton}
-                    onPress={() => navigation.goBack()}
+                    onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        navigation.goBack();
+                    }}
                 >
                     <Text style={editCarStyles.cancelButtonText}>Cancel</Text>
                 </TouchableOpacity>

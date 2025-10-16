@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity, Alert, RefreshControl } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import * as Haptics from 'expo-haptics';
 import { CarService } from "../services/carService";
 import { UserService } from "../services/userService";
 import { useFeatureGating } from "../hooks/useFeatureGating";
@@ -51,10 +52,12 @@ export const CarManagementScreen: React.FC<CarManagementScreenProps> = ({ naviga
     };
 
     const handleAddCar = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         navigation.navigate("CarRegistration");
     };
 
     const handleEditCar = (car: CarOwnerResponse) => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         navigation.navigate("EditCar", {
             carData: car
         });
@@ -62,6 +65,7 @@ export const CarManagementScreen: React.FC<CarManagementScreenProps> = ({ naviga
 
     const handleRemoveCar = (car: CarOwnerResponse) => {
         if (cars.length === 1) {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
             Alert.alert(
                 "Cannot Remove",
                 "You must have at least one registered car.",
@@ -70,6 +74,7 @@ export const CarManagementScreen: React.FC<CarManagementScreenProps> = ({ naviga
             return;
         }
 
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
         Alert.alert(
             "Remove Car",
             `Remove ${car.car_brand} ${car.car_model} from your account?`,
@@ -82,9 +87,11 @@ export const CarManagementScreen: React.FC<CarManagementScreenProps> = ({ naviga
                         try {
                             await CarService.removeCar(car.id);
                             await fetchUserCars(false);
-                            Alert.alert("Success", "Car removed successfulyy")
+                            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                            Alert.alert("Success", "Car removed successfully")
                         } catch (error) {
-                            Alert.alert("Erorr", "Failed to remove car")
+                            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+                            Alert.alert("Error", "Failed to remove car")
                         }
                     }
                 }
@@ -93,6 +100,7 @@ export const CarManagementScreen: React.FC<CarManagementScreenProps> = ({ naviga
     };
 
     const handleSetActiveCar = (car: CarOwnerResponse) => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         setActiveCar(car);
         Alert.alert("Success", `${car.car_brand} ${car.car_model} is now your active car`);
     };
