@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text } from 'react-native';
 import { chatInputStyles } from '../../styles/chat/chatInputStyles';
 import { safeAlert } from '../../utils/alertUtils';
+import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
+import { colors } from '../../theme/tokens';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => Promise<void>;
@@ -65,7 +68,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           value={message}
           onChangeText={setMessage}
           placeholder="Type a message..."
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.text.tertiary}
           multiline
           maxLength={MAX_MESSAGE_LENGTH}
           editable={!disabled && !isSending}
@@ -88,15 +91,28 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             chatInputStyles.sendButton,
             (!message.trim() || isSending || disabled) && chatInputStyles.sendButtonDisabled
           ]}
-          onPress={handleSend}
+          onPress={() => {
+            if (!isSending && !disabled && message.trim()) {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            }
+            handleSend();
+          }}
           disabled={!message.trim() || isSending || disabled}
         >
-          <Text style={[
-            chatInputStyles.sendButtonText,
-            (!message.trim() || isSending || disabled) && chatInputStyles.sendButtonTextDisabled
-          ]}>
-            {isSending ? 'Sending...' : 'Send'}
-          </Text>
+          {isSending ? (
+            <Text style={[
+              chatInputStyles.sendButtonText,
+              chatInputStyles.sendButtonTextDisabled
+            ]}>
+              Sending...
+            </Text>
+          ) : (
+            <Ionicons
+              name="send"
+              size={20}
+              color={message.trim() && !disabled ? colors.text.white : colors.text.tertiary}
+            />
+          )}
         </TouchableOpacity>
       </View>
     </View>

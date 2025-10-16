@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native';
+import { colors, spacing, borderRadius, typography, shadows } from '../../theme/tokens';
 
 export const messageBubbleStyles = StyleSheet.create({
   container: {
     marginVertical: 2,
-    paddingHorizontal: 15,
+    paddingHorizontal: spacing.md,
   },
   sentContainer: {
     alignItems: 'flex-end',
@@ -13,53 +14,54 @@ export const messageBubbleStyles = StyleSheet.create({
   },
   bubble: {
     maxWidth: '75%',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 18,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: borderRadius.lg,
     marginVertical: 2,
+    ...shadows.small,
   },
   sentBubble: {
-    backgroundColor: '#007AFF',
-    borderBottomRightRadius: 4,
+    backgroundColor: colors.primary.start,
+    borderBottomRightRadius: borderRadius.xs,
   },
   receivedBubble: {
-    backgroundColor: '#E5E5EA',
-    borderBottomLeftRadius: 4,
+    backgroundColor: colors.surface.elevated,
+    borderBottomLeftRadius: borderRadius.xs,
   },
   senderName: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#666',
+    fontSize: typography.size.sm,
+    fontWeight: typography.weight.semibold,
+    color: colors.text.secondary,
     marginBottom: 2,
   },
   messageText: {
-    fontSize: 16,
-    lineHeight: 20,
+    fontSize: typography.size.base,
+    lineHeight: typography.size.base * typography.lineHeight.normal,
   },
   sentText: {
-    color: 'white',
+    color: colors.text.white,
   },
   receivedText: {
-    color: '#000',
+    color: colors.text.primary,
   },
   metaContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 4,
+    marginTop: spacing.xs,
   },
   timestamp: {
-    fontSize: 11,
+    fontSize: typography.size.xs,
   },
   sentTimestamp: {
     color: 'rgba(255,255,255,0.7)',
   },
   receivedTimestamp: {
-    color: '#666',
+    color: colors.text.secondary,
   },
   readStatus: {
-    fontSize: 11,
+    fontSize: typography.size.xs,
     color: 'rgba(255,255,255,0.7)',
-    marginLeft: 4,
+    marginLeft: spacing.xs,
   },
 });

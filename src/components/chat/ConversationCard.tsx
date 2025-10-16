@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { conversationCardStyles } from '../../styles/chat/conversationCardStyles';
 import { ChatConversationResponse } from '../../types';
 import { formatChatListTime } from '../../utils/timeUtils';
+import * as Haptics from 'expo-haptics';
 
 interface ConversationCardProps {
     conversation: ChatConversationResponse;
@@ -46,7 +47,10 @@ export const ConversationCard: React.FC<ConversationCardProps> = ({
     return (
         <TouchableOpacity
             style={conversationCardStyles.container}
-            onPress={onPress}
+            onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onPress();
+            }}
             activeOpacity={0.7}
         >
             <View style={conversationCardStyles.avatarContainer}>
