@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text } from 'react-native';
 import { actionButtonStyles } from '../styles/actionButtonStyles';
+import * as Haptics from 'expo-haptics';
 
 interface ActionButtonProps {
   title: string;
@@ -43,7 +44,16 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
         getButtonStyle(),
         disabled && actionButtonStyles.disabledButton
       ]}
-      onPress={onPress}
+      onPress={() => {
+        if (!disabled) {
+          Haptics.impactAsync(
+            variant === 'danger'
+              ? Haptics.ImpactFeedbackStyle.Heavy
+              : Haptics.ImpactFeedbackStyle.Medium
+          );
+        }
+        onPress();
+      }}
       disabled={disabled}
     >
       <Text style={[

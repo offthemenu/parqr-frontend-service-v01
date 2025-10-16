@@ -1,22 +1,24 @@
 import { StyleSheet } from 'react-native';
+import { colors, spacing, borderRadius, typography, shadows } from '../theme/tokens';
 
 export const quickActionCardStyles = StyleSheet.create({
   actionCard: {
-    backgroundColor: '#f8f9fa',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
+    backgroundColor: colors.surface.elevated,
+    padding: spacing.md,
+    borderRadius: borderRadius.sm,
+    marginBottom: spacing.sm,
     borderLeftWidth: 4,
-    borderLeftColor: '#007AFF',
+    borderLeftColor: colors.primary.start,
+    ...shadows.small,
   },
   actionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 5,
+    fontSize: typography.size.base,
+    fontWeight: typography.weight.semibold,
+    color: colors.text.primary,
+    marginBottom: spacing.xs,
   },
   actionSubtitle: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: typography.size.md,
+    color: colors.text.secondary,
   },
 });
