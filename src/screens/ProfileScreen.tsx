@@ -9,6 +9,9 @@ import { QRCodeDisplay } from '../components/QRCodeDisplay';
 import { ActionButton } from '../components/ActionButton';
 import { profileScreenStyles } from '../styles/profileScreenStyles';
 import { AuthService } from '../services/authService';
+import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
+import { colors } from '../theme/tokens';
 
 type ProfileScreenRouteProp = RouteProp<RootStackParamList, 'Profile'>;
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Profile'>;
@@ -92,7 +95,13 @@ export const ProfileScreen: React.FC = () => {
             showId={true}
           />
           
-          <TouchableOpacity style={profileScreenStyles.regenerateButton} onPress={handleRegenerateQR}>
+          <TouchableOpacity
+            style={profileScreenStyles.regenerateButton}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              handleRegenerateQR();
+            }}
+          >
             <Text style={profileScreenStyles.regenerateButtonText}>Regenerate QR Code</Text>
           </TouchableOpacity>
         </View>
@@ -101,26 +110,44 @@ export const ProfileScreen: React.FC = () => {
       {/* Actions Section */}
       <View style={profileScreenStyles.section}>
         <Text style={profileScreenStyles.sectionTitle}>Account Actions</Text>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={profileScreenStyles.actionButton}
-          onPress={() => handleActionPress('Manage Cars')}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            handleActionPress('Manage Cars');
+          }}
         >
-          <Text style={profileScreenStyles.actionButtonText}>🚗 Manage Cars</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <Ionicons name="car" size={20} color={colors.primary.start} />
+            <Text style={profileScreenStyles.actionButtonText}>Manage Cars</Text>
+          </View>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={profileScreenStyles.actionButton}
-          onPress={() => handleActionPress('App Settings')}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            handleActionPress('App Settings');
+          }}
         >
-          <Text style={profileScreenStyles.actionButtonText}>📱 App Settings</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <Ionicons name="settings" size={20} color={colors.primary.start} />
+            <Text style={profileScreenStyles.actionButtonText}>App Settings</Text>
+          </View>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={profileScreenStyles.actionButton}
-          onPress={() => handleActionPress('Help & Support')}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            handleActionPress('Help & Support');
+          }}
         >
-          <Text style={profileScreenStyles.actionButtonText}>❓ Help & Support</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <Ionicons name="help-circle" size={20} color={colors.primary.start} />
+            <Text style={profileScreenStyles.actionButtonText}>Help & Support</Text>
+          </View>
         </TouchableOpacity>
       </View>
 
