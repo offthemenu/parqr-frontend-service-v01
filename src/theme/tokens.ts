@@ -5,52 +5,61 @@
  */
 
 export const colors = {
-  // Brand Colors - Primary blue used throughout app
+  // Brand Colors - Teal green primary palette
   primary: {
-    start: '#007AFF',      // iOS system blue
-    end: '#0051D5',        // Darker blue for gradients
-    light: '#4DA3FF',      // Lighter variant for hovers
-    dark: '#0040A0',       // Darker variant for pressed states
+    start: '#009777',      // Teal green - main brand color
+    end: '#00725B',        // Darker teal for gradients
+    light: '#33AC92',      // Lighter teal for hovers
+    dark: '#005A48',       // Darker teal for pressed states
   },
 
-  // Surface Colors - Backgrounds and cards
+  // Secondary/Accent - Warm brown tones
+  secondary: {
+    main: '#705C58',       // Brownish accent color
+    light: '#8C7570',      // Lighter brown
+    dark: '#5A4A46',       // Darker brown
+  },
+
+  // Surface Colors - Warm neutral backgrounds
   surface: {
-    base: '#FFFFFF',
-    elevated: '#F8F9FA',
+    base: '#FFFFFF',           // Pure white for cards
+    elevated: '#F5EFE7',       // Toned down warm beige (softer than #EBD7BB)
+    background: '#FAF7F2',     // Very light warm background
     glass: 'rgba(255, 255, 255, 0.7)',     // Glassmorphism
     glassStrong: 'rgba(255, 255, 255, 0.9)',
-    darkGlass: 'rgba(0, 0, 0, 0.1)',
+    darkGlass: 'rgba(61, 56, 60, 0.1)',    // Subtle dark glass using text color
   },
 
-  // Text Colors - Typography hierarchy
+  // Text Colors - Warm dark tones
   text: {
-    primary: '#1F2937',    // Dark gray for main text
-    secondary: '#6B7280',  // Medium gray for secondary text
-    tertiary: '#9CA3AF',   // Light gray for tertiary text
+    primary: '#3D383C',        // Your dark brownish-gray for main text
+    secondary: '#705C58',      // Using secondary color for secondary text
+    tertiary: '#9B8F8B',       // Lighter warm gray for tertiary text
     white: '#FFFFFF',
-    onPrimary: '#FFFFFF',  // Text on primary color backgrounds
+    onPrimary: '#FFFFFF',      // Text on primary color backgrounds
+    onSecondary: '#FFFFFF',    // Text on secondary color backgrounds
   },
 
-  // Semantic Colors
+  // Semantic Colors - Adjusted to match warm palette
   notification: {
-    error: '#FF3B30',      // Red for errors/alerts
-    success: '#34C759',    // Green for success
-    warning: '#FF9500',    // Orange for warnings
-    info: '#007AFF',       // Blue for info
+    error: '#D84339',          // Warmer red
+    success: '#009777',        // Using primary green for success
+    warning: '#E89B3C',        // Warm orange
+    info: '#009777',           // Using primary for info
   },
 
-  // Border Colors
+  // Border Colors - Warm neutrals
   border: {
-    light: '#E5E5EA',
-    medium: '#C7C7CC',
-    dark: '#8E8E93',
+    light: '#E8DFD6',          // Light warm border
+    medium: '#D1C4B8',         // Medium warm border
+    dark: '#9B8F8B',           // Dark warm border
   },
 
   // Overlay Colors
   overlay: {
-    light: 'rgba(0, 0, 0, 0.1)',
-    medium: 'rgba(0, 0, 0, 0.3)',
-    heavy: 'rgba(0, 0, 0, 0.6)',
+    light: 'rgba(61, 56, 60, 0.1)',    // Subtle overlay
+    medium: 'rgba(61, 56, 60, 0.3)',   // Medium overlay
+    heavy: 'rgba(61, 56, 60, 0.6)',    // Heavy overlay
   },
 };
 
@@ -132,14 +141,14 @@ export const shadows = {
   },
   // Colored shadows for premium feel
   primary: {
-    shadowColor: '#007AFF',
+    shadowColor: '#009777',    // Teal green shadow
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 20,
     elevation: 10,
   },
   notification: {
-    shadowColor: '#FF3B30',
+    shadowColor: '#D84339',    // Warm red shadow
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
