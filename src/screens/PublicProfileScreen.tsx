@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, SafeAreaView, Alert } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { RootStackParamList } from '../types';
 import { publicProfileStyles } from '../styles/publicProfileStyles';
 import { ChatService } from '../services/chatService';
@@ -10,6 +12,7 @@ import { MoveRequestService } from '../services/moveRequestService';
 import { ParkingService } from '../services/parkingService';
 import { ParkingSession } from '../types';
 import { formatLocalTime, calculateParkingDuration } from '../utils/timeUtils';
+import { colors } from '../theme/tokens';
 
 type PublicProfileScreenRouteProp = RouteProp<RootStackParamList, 'PublicProfile'>;
 type PublicProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'PublicProfile'>;
@@ -22,7 +25,8 @@ export const PublicProfileScreen: React.FC = () => {
   const [parkingHistory, setParkingHistory] = useState<ParkingSession[]>([]);
   const [showHistory, setShowHistory] = useState(false);
 
-  const handleSendChat = () => {
+  const handleSendChat = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setIsLoading(true);
 
     try {
@@ -31,6 +35,7 @@ export const PublicProfileScreen: React.FC = () => {
         recipientDisplayName: userData.profile_display_name || userCode
       });
     } catch (error) {
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       Alert.alert('Error', 'Unable to open chat. Please try again.');
       console.error('Chat navigation error:', error);
     } finally {
@@ -39,18 +44,23 @@ export const PublicProfileScreen: React.FC = () => {
   };
 
   const handleRequestMovecar = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     Alert.prompt(
       "Confirm License Plate",
       "Enter the license plate of the car you want to request to move:",
       [
         {
           text: "Cancel",
-          style: 'cancel'
+          style: 'cancel',
+          onPress: async () => {
+            await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          }
         },
         {
           text: "Send Request",
           onPress: async (licensePlate?: string) => {
             if (!licensePlate || licensePlate.trim().length === 0) {
+              await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
               Alert.alert("Error", "Please enter a license plate");
               return;
             }
@@ -63,6 +73,7 @@ export const PublicProfileScreen: React.FC = () => {
                 licensePlate.trim().toUpperCase()
               );
 
+              await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
               Alert.alert(
                 "Request Sent",
                 "Your request to move the car has been sent to the vehicle owner.",
@@ -75,6 +86,7 @@ export const PublicProfileScreen: React.FC = () => {
               );
             } catch (error: any) {
               console.error("Move car request error:", error);
+              await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
               Alert.alert(
                 "Error",
                 error.response?.data?.detail || "Failed to send move request. Please try again."
@@ -111,7 +123,8 @@ export const PublicProfileScreen: React.FC = () => {
     }
   }, [userCode]);
 
-  const handleCloseProfile = () => {
+  const handleCloseProfile = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     navigation.goBack();
   };
 
@@ -126,7 +139,7 @@ export const PublicProfileScreen: React.FC = () => {
           style={publicProfileStyles.closeButton}
           onPress={handleCloseProfile}
         >
-          <Text style={publicProfileStyles.closeButtonText}>✕</Text>
+          <Ionicons name="close" size={24} color={colors.text.primary} />
         </TouchableOpacity>
       )}
 
@@ -152,14 +165,19 @@ export const PublicProfileScreen: React.FC = () => {
         {/* Parking History Section */}
         {parkingHistory.length > 0 && (
           <View style={publicProfileStyles.historySection}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={publicProfileStyles.historyHeader}
-              onPress={() => setShowHistory(!showHistory)}
+              onPress={async () => {
+                await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setShowHistory(!showHistory);
+              }}
             >
               <Text style={publicProfileStyles.historyTitle}>Recent Parking Activity</Text>
-              <Text style={publicProfileStyles.historyToggle}>
-                {showHistory ? '▼' : '▶'}
-              </Text>
+              <Ionicons
+                name={showHistory ? 'chevron-down' : 'chevron-forward'}
+                size={18}
+                color={colors.text.secondary}
+              />
             </TouchableOpacity>
             
             {showHistory && (
@@ -175,9 +193,12 @@ export const PublicProfileScreen: React.FC = () => {
                       </Text>
                     )}
                     {session.note_location && (
-                      <Text style={publicProfileStyles.historyLocation}>
-                        📍 {session.note_location}
-                      </Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Ionicons name="location" size={12} color={colors.text.secondary} />
+                        <Text style={[publicProfileStyles.historyLocation, { marginLeft: 4 }]}>
+                          {session.note_location}
+                        </Text>
+                      </View>
                     )}
                   </View>
                 ))}
@@ -198,12 +219,15 @@ export const PublicProfileScreen: React.FC = () => {
           onPress={handleRequestMovecar}
           disabled={isLoading}
         >
-          <Text style={[
-            publicProfileStyles.actionButtonText,
-            isLoading && publicProfileStyles.actionButtonTextDisabled
-          ]}>
-            {isLoading ? 'Sending...' : '🚗 Request to Move Car'}
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Ionicons name="car" size={20} color={colors.text.white} />
+            <Text style={[
+              publicProfileStyles.actionButtonText,
+              isLoading && publicProfileStyles.actionButtonTextDisabled
+            ]}>
+              {isLoading ? 'Sending...' : 'Request to Move Car'}
+            </Text>
+          </View>
         </TouchableOpacity>
 
         {!isWebView && (
@@ -215,12 +239,15 @@ export const PublicProfileScreen: React.FC = () => {
             onPress={handleSendChat}
             disabled={isLoading}
           >
-            <Text style={[
-              publicProfileStyles.chatButtonText,
-              isLoading && publicProfileStyles.actionButtonTextDisabled
-            ]}>
-              {isLoading ? 'Opening...' : '💬 Send Chat'}
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <Ionicons name="chatbubble" size={20} color={colors.text.white} />
+              <Text style={[
+                publicProfileStyles.chatButtonText,
+                isLoading && publicProfileStyles.actionButtonTextDisabled
+              ]}>
+                {isLoading ? 'Opening...' : 'Send Chat'}
+              </Text>
+            </View>
           </TouchableOpacity>
         )}
       </View>

@@ -1,4 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native';
+import { colors, spacing, borderRadius, typography, shadows } from '../theme/tokens';
 
 const { width, height } = Dimensions.get('window');
 const scanAreaSize = width * 0.7;
@@ -6,7 +7,7 @@ const scanAreaSize = width * 0.7;
 export const qrScannerStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: colors.text.primary,
   },
   camera: {
     flex: 1,
@@ -24,13 +25,14 @@ export const qrScannerStyles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.7)',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingBottom: 20,
+    paddingBottom: spacing.lg,
   },
   instructions: {
-    color: 'white',
-    fontSize: 16,
+    color: colors.text.white,
+    fontSize: typography.size.base,
     textAlign: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: spacing.lg,
+    fontWeight: typography.weight.medium,
   },
   scanArea: {
     height: scanAreaSize,
@@ -47,47 +49,51 @@ export const qrScannerStyles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.7)',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 20,
+    paddingTop: spacing.lg,
   },
   cancelButton: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 25,
-    marginBottom: 10,
+    backgroundColor: colors.surface.darkGlass,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.md,
+    borderRadius: borderRadius.full,
+    marginBottom: spacing.sm,
+    ...shadows.small,
   },
   cancelButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    color: colors.text.white,
+    fontSize: typography.size.base,
+    fontWeight: typography.weight.semibold,
   },
   scanAgainButton: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 25,
+    backgroundColor: colors.primary.start,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.md,
+    borderRadius: borderRadius.full,
+    ...shadows.medium,
   },
   scanAgainButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    color: colors.text.white,
+    fontSize: typography.size.base,
+    fontWeight: typography.weight.semibold,
   },
   message: {
     textAlign: 'center',
-    fontSize: 18,
-    color: 'white',
-    marginBottom: 20,
+    fontSize: typography.size.lg,
+    color: colors.text.white,
+    marginBottom: spacing.lg,
+    fontWeight: typography.weight.medium,
   },
   permissionButton: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 25,
+    backgroundColor: colors.primary.start,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.md,
+    borderRadius: borderRadius.full,
     alignSelf: 'center',
+    ...shadows.medium,
   },
   permissionButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    color: colors.text.white,
+    fontSize: typography.size.base,
+    fontWeight: typography.weight.semibold,
   },
 });
