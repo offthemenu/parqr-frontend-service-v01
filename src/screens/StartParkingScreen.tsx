@@ -6,7 +6,9 @@ import {
     TouchableOpacity,
     ScrollView,
     Alert,
-    ActivityIndicator
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -75,10 +77,15 @@ export const StartParkingScreen: React.FC = () => {
     };
 
     return (
-        <View style={startParkingScreenStyles.container}>
+        <KeyboardAvoidingView
+            style={startParkingScreenStyles.container}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+        >
             <ScrollView
                 style={startParkingScreenStyles.scrollView}
                 contentContainerStyle={startParkingScreenStyles.scrollContent}
+                keyboardShouldPersistTaps="handled"
             >
                 {/* Header */}
                 <View style={startParkingScreenStyles.header}>
@@ -188,6 +195,6 @@ export const StartParkingScreen: React.FC = () => {
                     )}
                 </TouchableOpacity>
             </ScrollView>
-        </View>
+        </KeyboardAvoidingView>
     );
 };
