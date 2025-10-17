@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
     View,
     Text,
@@ -23,6 +23,11 @@ export const StartParkingScreen: React.FC = () => {
     const navigation = useNavigation<StartParkingScreenNavigationProp>();
     const route = useRoute<StartParkingScreenRouteProp>();
     const { user } = route.params;
+
+    // Refs for scroll and input management
+    const scrollViewRef = useRef<ScrollView>(null);
+    const locationNoteInputRef = useRef<TextInput>(null);
+    const publicMessageInputRef = useRef<TextInput>(null);
 
     // State for form inputs
     const [selectedCarId, setSelectedCarId] = useState<number | null>(
@@ -83,6 +88,7 @@ export const StartParkingScreen: React.FC = () => {
             keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
         >
             <ScrollView
+                ref={scrollViewRef}
                 style={startParkingScreenStyles.scrollView}
                 contentContainerStyle={startParkingScreenStyles.scrollContent}
                 keyboardShouldPersistTaps="handled"
@@ -142,6 +148,7 @@ export const StartParkingScreen: React.FC = () => {
                         Add details like "Near the entrance" or "Level 3, Zone B"
                     </Text>
                     <TextInput
+                        ref={locationNoteInputRef}
                         style={startParkingScreenStyles.textInput}
                         placeholder="e.g., Parking Lot A, Row 5"
                         placeholderTextColor="#999"
@@ -149,6 +156,17 @@ export const StartParkingScreen: React.FC = () => {
                         onChangeText={setLocationNote}
                         maxLength={LOCATION_MAX}
                         multiline
+                        onFocus={() => {
+                            setTimeout(() => {
+                                locationNoteInputRef.current?.measureLayout(
+                                    scrollViewRef.current as any,
+                                    (x, y) => {
+                                        scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
+                                    },
+                                    () => {}
+                                );
+                            }, 100);
+                        }}
                     />
                     <Text style={startParkingScreenStyles.charCount}>
                         {locationNote.length}/{LOCATION_MAX}
@@ -164,6 +182,7 @@ export const StartParkingScreen: React.FC = () => {
                         Visible to others who scan your QR code
                     </Text>
                     <TextInput
+                        ref={publicMessageInputRef}
                         style={startParkingScreenStyles.textInput}
                         placeholder="e.g., Available to move if needed"
                         placeholderTextColor="#999"
@@ -171,6 +190,17 @@ export const StartParkingScreen: React.FC = () => {
                         onChangeText={setPublicMessage}
                         maxLength={PUBLIC_MESSAGE_MAX}
                         multiline
+                        onFocus={() => {
+                            setTimeout(() => {
+                                publicMessageInputRef.current?.measureLayout(
+                                    scrollViewRef.current as any,
+                                    (x, y) => {
+                                        scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
+                                    },
+                                    () => {}
+                                );
+                            }, 100);
+                        }}
                     />
                     <Text style={startParkingScreenStyles.charCount}>
                         {publicMessage.length}/{PUBLIC_MESSAGE_MAX}
