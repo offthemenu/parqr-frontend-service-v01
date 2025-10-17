@@ -64,7 +64,7 @@ export const PublicProfileScreen: React.FC = () => {
               Alert.alert("Error", "Please enter a license plate");
               return;
             }
-
+            
             setIsLoading(true);
 
             try {
@@ -80,17 +80,33 @@ export const PublicProfileScreen: React.FC = () => {
                 [
                   {
                     text: "OK",
-                    onPress: () => navigation.goBack()
+                    onPress: () => {
+                      navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'Home' }],
+                      });
+                    }
                   }
                 ]
               );
             } catch (error: any) {
               console.error("Move car request error:", error);
               await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-              Alert.alert(
-                "Error",
-                error.response?.data?.detail || "Failed to send move request. Please try again."
-              );
+
+              // Handle specific error cases
+              let errorTitle = "Error";
+              let errorMessage = "Failed to send move request. Please try again.";
+
+              if (error.response?.status === 422) {
+                // License plate validation failed
+                errorTitle = "Invalid License Plate";
+                errorMessage = error.response?.data?.detail || "The license plate you entered does not belong to this user. Please verify and try again.";
+              } else if (error.response?.data?.detail) {
+                // Other backend errors with detail message
+                errorMessage = error.response.data.detail;
+              }
+
+              Alert.alert(errorTitle, errorMessage);
             } finally {
               setIsLoading(false);
             }
