@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '../theme/tokens';
 
 export const startParkingScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.surface.background,
   },
   scrollView: {
     flex: 1,

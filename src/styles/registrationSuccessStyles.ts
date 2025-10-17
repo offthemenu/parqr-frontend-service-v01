@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native';
+import { colors, spacing } from '../theme/tokens';
 
 export const registrationSuccessStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.surface.background,
     padding: 20,
   },
   successContainer: {

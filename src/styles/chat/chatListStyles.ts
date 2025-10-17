@@ -1,15 +1,16 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '../../theme/tokens';
 
 export const chatListStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface.background,
   },
   loadingText: {
     fontSize: 16,
@@ -19,7 +20,7 @@ export const chatListStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface.background,
     paddingHorizontal: 20,
   },
   errorText: {

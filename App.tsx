@@ -9,14 +9,15 @@ import { HomeScreen } from './src/screens/HomeScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { QRScannerScreen } from './src/screens/QRScannerScreen';
 import { PublicProfileScreen } from './src/screens/PublicProfileScreen';
-import { ChatScreen } from './src/screens/ChatScreen';         
-import { ChatListScreen } from './src/screens/ChatListScreen'; 
+import { ChatScreen } from './src/screens/ChatScreen';
+import { ChatListScreen } from './src/screens/ChatListScreen';
 import { StartParkingScreen } from './src/screens/StartParkingScreen';
 import { ParkOutHistoryScreen } from './src/screens/ParkOutHistoryScreen';
 import { ParkingHistoryScreen } from './src/screens/ParkingHistoryScreen';
 import { CarManagementScreen } from './src/screens/CarManagementScreen';
 import { EditCarScreen } from './src/screens/EditCarScreen';
 import { RootStackParamList } from './src/types';
+import { colors } from './src/theme/tokens';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -27,7 +28,7 @@ export default function App() {
         initialRouteName="Splash"
         screenOptions={{
           headerStyle: {
-            backgroundColor: '#007AFF',
+            backgroundColor: colors.primary.start,
           },
           headerTintColor: '#fff',
           headerTitleStyle: {
@@ -71,7 +72,7 @@ export default function App() {
           options={{
             title: 'Edit Car',
             headerStyle: {
-              backgroundColor: '#007AFF',
+              backgroundColor: colors.primary.start,
             },
             headerTintColor: '#fff',
           }}
@@ -91,7 +92,7 @@ export default function App() {
           options={{
             title: 'Start Parking',
             headerStyle: {
-              backgroundColor: '#007AFF',
+              backgroundColor: colors.primary.start,
             },
             headerTintColor: '#fff',
           }}
@@ -109,7 +110,7 @@ export default function App() {
           options={{
             title: 'Manage Cars',
             headerStyle: {
-              backgroundColor: '#007AFF',
+              backgroundColor: colors.primary.start,
             },
             headerTintColor: '#fff',
           }}
@@ -151,7 +152,7 @@ export default function App() {
           options={{
             title: 'Park-Out History',
             headerStyle: {
-              backgroundColor: '#007AFF',
+              backgroundColor: colors.primary.start,
             },
             headerTintColor: '#fff',
           }}
@@ -162,7 +163,7 @@ export default function App() {
           options={{
             title: 'Parking History',
             headerStyle: {
-              backgroundColor: '#007AFF',
+              backgroundColor: colors.primary.start,
             },
             headerTintColor: '#fff',
           }}

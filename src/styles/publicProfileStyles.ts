@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '../theme/tokens';
 
 export const publicProfileStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface.background,
   },
   
   // ID Card Header Section

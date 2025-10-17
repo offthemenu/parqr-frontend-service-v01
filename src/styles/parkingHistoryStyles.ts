@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '../theme/tokens';
 
 export const parkingHistoryStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.surface.background,
   },
   centerContainer: {
     flex: 1,

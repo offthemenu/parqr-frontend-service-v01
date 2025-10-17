@@ -4,7 +4,7 @@ import { colors, spacing, borderRadius, typography, shadows } from '../theme/tok
 export const carRegistrationStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.surface.base,
+    backgroundColor: colors.surface.background,
   },
   scrollContainer: {
     flexGrow: 1,

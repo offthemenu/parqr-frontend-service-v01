@@ -4,7 +4,7 @@ import { colors, spacing, borderRadius, typography, shadows } from '../theme/tok
 export const editCarStyles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.surface.elevated,
+        backgroundColor: colors.surface.background,
     },
     form: {
         padding: spacing.lg,
