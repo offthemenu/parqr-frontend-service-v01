@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, Alert, ScrollView } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
@@ -160,26 +160,32 @@ export const PublicProfileScreen: React.FC = () => {
       )}
 
       {/* Content Container */}
-      <View style={publicProfileStyles.content}>
-        {/* User Display Name */}
-        <Text style={publicProfileStyles.displayName}>
-          {userData.profile_display_name || userData.user_code}
-        </Text>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={publicProfileStyles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Top Section - User Info */}
+        <View>
+          {/* User Display Name */}
+          <Text style={publicProfileStyles.displayName}>
+            {userData.profile_display_name || userData.user_code}
+          </Text>
 
-        {/* Car Information */}
-        {primaryCar ? (
-          <View style={publicProfileStyles.carSection}>
-            <Text style={publicProfileStyles.carBrand}>{primaryCar.car_brand}</Text>
-            <Text style={publicProfileStyles.carModel}>{primaryCar.car_model}</Text>
-          </View>
-        ) : (
-          <View style={publicProfileStyles.carSection}>
-            <Text style={publicProfileStyles.noCarText}>No vehicle registered</Text>
-          </View>
-        )}
+          {/* Car Information */}
+          {primaryCar ? (
+            <View style={publicProfileStyles.carSection}>
+              <Text style={publicProfileStyles.carBrand}>{primaryCar.car_brand}</Text>
+              <Text style={publicProfileStyles.carModel}>{primaryCar.car_model}</Text>
+            </View>
+          ) : (
+            <View style={publicProfileStyles.carSection}>
+              <Text style={publicProfileStyles.noCarText}>No vehicle registered</Text>
+            </View>
+          )}
 
-        {/* Parking History Section */}
-        {parkingHistory.length > 0 && (
+          {/* Parking History Section */}
+          {parkingHistory.length > 0 && (
           <View style={publicProfileStyles.historySection}>
             <TouchableOpacity
               style={publicProfileStyles.historyHeader}
@@ -225,9 +231,11 @@ export const PublicProfileScreen: React.FC = () => {
             )}
           </View>
         )}
+        </View>
 
-        {/* Action Buttons */}
-        <TouchableOpacity
+        {/* Action Buttons - Pinned to bottom */}
+        <View style={publicProfileStyles.buttonSection}>
+          <TouchableOpacity
           style={[
             publicProfileStyles.actionButton,
             isLoading && publicProfileStyles.actionButtonDisabled
@@ -266,7 +274,8 @@ export const PublicProfileScreen: React.FC = () => {
             </View>
           </TouchableOpacity>
         )}
-      </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
