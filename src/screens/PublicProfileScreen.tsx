@@ -81,10 +81,10 @@ export const PublicProfileScreen: React.FC = () => {
                   {
                     text: "OK",
                     onPress: () => {
-                      navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'Home' }],
-                      });
+                      // Pop to the top of the stack (HomeScreen)
+                      if (navigation.canGoBack()) {
+                        navigation.popToTop();
+                      }
                     }
                   }
                 ]
