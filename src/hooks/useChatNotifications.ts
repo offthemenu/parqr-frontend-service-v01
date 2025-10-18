@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import { ChatService } from '../services/chatService';
 
@@ -19,7 +19,8 @@ export const useChatNotifications = ({
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const appState = useRef(AppState.currentState);
 
-    const fetchUnreadCount = async () => {
+    // Stable fetch function
+    const fetchUnreadCount = useCallback(async () => {
         if (!enabled || !currentUserCode) return;
 
         try {
@@ -30,20 +31,29 @@ export const useChatNotifications = ({
                 (total, conversation) => total + (conversation.unread_count || 0),
                 0
             );
-            
+
             console.log(`🔔 Notification Debug - Found ${conversations.length} conversations`);
             conversations.forEach((conv, index) => {
                 console.log(`🔔 Conversation ${index + 1}: ${conv.participant_user_code} - Unread: ${conv.unread_count}`);
             });
             console.log(`🔔 Notification Debug - Total unread count: ${unreadCount}`);
-            
+
             setTotalUnreadCount(unreadCount);
         } catch (error) {
             console.error('Error fetching unread count:', error);
         }
-    };
+    }, [enabled, currentUserCode]);
 
-    const startPolling = () => {
+    // Stable stopPolling function
+    const stopPolling = useCallback(() => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+    }, []);
+
+    // Stable startPolling function
+    const startPolling = useCallback(() => {
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
         }
@@ -51,14 +61,7 @@ export const useChatNotifications = ({
         intervalRef.current = setInterval(() => {
             fetchUnreadCount();
         }, pollInterval);
-    };
-
-    const stopPolling = () => {
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-        }
-    };
+    }, [pollInterval, fetchUnreadCount]);
 
     // Handling app state changes
     useEffect(() => {
@@ -82,7 +85,7 @@ export const useChatNotifications = ({
         return () => {
             subscription?.remove();
         };
-    }, [enabled]);
+    }, [enabled, fetchUnreadCount, startPolling, stopPolling]);
 
     // Main polling effect
     useEffect(() => {
@@ -96,13 +99,14 @@ export const useChatNotifications = ({
         return () => {
             stopPolling();
         };
-    }, [enabled, currentUserCode, pollInterval]);
+    }, [enabled, currentUserCode, fetchUnreadCount, startPolling, stopPolling]);
 
-    const refreshUnreadCount = async () => {
+    // Stable refresh function
+    const refreshUnreadCount = useCallback(async () => {
         setIsLoading(true);
         await fetchUnreadCount();
         setIsLoading(false);
-    };
+    }, [fetchUnreadCount]);
 
     return {
         totalUnreadCount,

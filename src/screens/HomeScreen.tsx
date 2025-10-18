@@ -41,7 +41,12 @@ export const HomeScreen: React.FC = () => {
     pollInterval: 30000
   })
   // Move request notifications hook with polling
-  const { moveRequestsUnreadCount, refreshMoveRequestsCount } = useMoveRequestNotifications(
+  const {
+    moveRequestsUnreadCount,
+    refreshMoveRequestsCount,
+    startPolling: startMoveRequestPolling,
+    stopPolling: stopMoveRequestPolling
+  } = useMoveRequestNotifications(
     user.user_code,
     { pollInterval: 30000 } // Poll every 30 seconds
   );
@@ -99,13 +104,26 @@ export const HomeScreen: React.FC = () => {
     fetchActiveSession();
   }, []);
 
-  // Refresh notifications when screen comes into focus
+  // Refresh notifications and start polling when screen comes into focus
   useFocusEffect(
     React.useCallback(() => {
-      console.log('🏠 HomeScreen focused - refreshing notifications');
+      console.log('🏠 HomeScreen focused - refreshing notifications and starting polling');
+
+      // Refresh immediately on focus
       refreshUnreadCount();
-      refreshMoveRequestsCount(); // Also refresh move requests
-    }, [refreshUnreadCount, refreshMoveRequestsCount])
+      refreshMoveRequestsCount();
+
+      // Start polling with a slight delay to avoid initial double-call
+      const pollingTimeout = setTimeout(() => {
+        startMoveRequestPolling();
+      }, 100);
+
+      return () => {
+        console.log('🏠 HomeScreen unfocused - stopping polling');
+        clearTimeout(pollingTimeout);
+        stopMoveRequestPolling();
+      };
+    }, [refreshUnreadCount, refreshMoveRequestsCount, startMoveRequestPolling, stopMoveRequestPolling])
   );
 
   // Refresh user data
