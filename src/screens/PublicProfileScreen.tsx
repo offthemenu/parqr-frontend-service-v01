@@ -120,28 +120,35 @@ export const PublicProfileScreen: React.FC = () => {
     );
   };
 
-  const fetchParkingHistory = async () => {
+  const fetchParkingData = async () => {
     if (!userCode) return;
 
     try {
-      // Use public parking history endpoint if available, otherwise skip
+      // Fetch active sessions separately to get public_message
+      const activeSessions = await ParkingService.getPublicActiveSessions(userCode);
+      console.log('🔄 Public active sessions:', JSON.stringify(activeSessions, null, 2));
+
+      if (activeSessions.length > 0) {
+        setActiveSession(activeSessions[0]); // Take the first active session
+        console.log('💬 Public message from active session:', activeSessions[0].public_message);
+      } else {
+        setActiveSession(null);
+        console.log('ℹ️ No active parking sessions found');
+      }
+
+      // Also fetch parking history for display
       const history = await ParkingService.getPublicParkingHistory(userCode);
-
-      // Find active session (session without end_time)
-      const active = history.find(session => !session.end_time);
-      setActiveSession(active || null);
-
       setParkingHistory(history.slice(0, 5)); // Show last 5 sessions
     } catch (error) {
-      console.error('Public parking history not available:', error);
+      console.error('Public parking data not available:', error);
       // Fail silently - this is optional information
     }
   };
 
-  // Load parking history when component mounts
+  // Load parking data when component mounts
   useEffect(() => {
     if (userCode) {
-      fetchParkingHistory();
+      fetchParkingData();
     }
   }, [userCode]);
 
@@ -191,6 +198,12 @@ export const PublicProfileScreen: React.FC = () => {
           )}
 
           {/* Public Message Section - shown when user has active parking session with message */}
+          {(() => {
+            console.log('🎨 Rendering check - activeSession:', activeSession);
+            console.log('🎨 Rendering check - public_message:', activeSession?.public_message);
+            console.log('🎨 Should render:', !!activeSession?.public_message);
+            return null;
+          })()}
           {activeSession?.public_message && (
             <View style={publicProfileStyles.publicMessageSection}>
               <Text style={publicProfileStyles.publicMessageLabel}>Message from driver:</Text>

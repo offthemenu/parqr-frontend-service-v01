@@ -87,4 +87,14 @@ export class ParkingService {
             return [];
         }
     }
+
+    static async getPublicActiveSessions(userCode: string): Promise<ParkingSession[]> {
+        try {
+            const response = await apiClient.get(`/v01/public_profile/active_sessions/${userCode}`);
+            return response.data || [];
+        } catch (error) {
+            console.error("Error fetching public active sessions:", error);
+            return [];
+        }
+    }
 }
