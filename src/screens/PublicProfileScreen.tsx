@@ -23,6 +23,7 @@ export const PublicProfileScreen: React.FC = () => {
   const { user, userCode, userData, isWebView = false } = route.params;
   const [isLoading, setIsLoading] = useState(false);
   const [parkingHistory, setParkingHistory] = useState<ParkingSession[]>([]);
+  const [activeSession, setActiveSession] = useState<ParkingSession | null>(null);
   const [showHistory, setShowHistory] = useState(false);
 
   const handleSendChat = async () => {
@@ -125,6 +126,11 @@ export const PublicProfileScreen: React.FC = () => {
     try {
       // Use public parking history endpoint if available, otherwise skip
       const history = await ParkingService.getPublicParkingHistory(userCode);
+
+      // Find active session (session without end_time)
+      const active = history.find(session => !session.end_time);
+      setActiveSession(active || null);
+
       setParkingHistory(history.slice(0, 5)); // Show last 5 sessions
     } catch (error) {
       console.error('Public parking history not available:', error);
@@ -181,6 +187,16 @@ export const PublicProfileScreen: React.FC = () => {
           ) : (
             <View style={publicProfileStyles.carSection}>
               <Text style={publicProfileStyles.noCarText}>No vehicle registered</Text>
+            </View>
+          )}
+
+          {/* Public Message Section - shown when user has active parking session with message */}
+          {activeSession?.public_message && (
+            <View style={publicProfileStyles.publicMessageSection}>
+              <Text style={publicProfileStyles.publicMessageLabel}>Message from driver:</Text>
+              <Text style={publicProfileStyles.publicMessageText}>
+                {activeSession.public_message}
+              </Text>
             </View>
           )}
 

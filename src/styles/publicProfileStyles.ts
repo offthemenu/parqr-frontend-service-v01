@@ -184,7 +184,32 @@ export const publicProfileStyles = StyleSheet.create({
     fontWeight: typography.weight.semibold,
     letterSpacing: 0.3,
   },
-  
+
+  // Public Message Styles
+  publicMessageSection: {
+    backgroundColor: colors.surface.base,
+    borderRadius: borderRadius.md,
+    padding: spacing.lg,
+    marginBottom: spacing.xl,
+    borderWidth: 1,
+    borderColor: colors.border.light,
+    ...shadows.small,
+  },
+  publicMessageLabel: {
+    fontSize: typography.size.sm,
+    fontWeight: typography.weight.semibold,
+    color: colors.text.secondary,
+    marginBottom: spacing.sm,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  publicMessageText: {
+    fontSize: typography.size.base,
+    color: colors.text.primary,
+    lineHeight: 22,
+    fontStyle: 'italic',
+  },
+
   // Parking History Styles
   historySection: {
     backgroundColor: colors.surface.base,
