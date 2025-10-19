@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import * as Haptics from 'expo-haptics';
 import { CountryInfo } from '../types';
 import { countryPickerStyles } from '../styles/countryPickerStyles';
+import { colors } from '../theme/tokens';
 
 interface CountryPickerProps {
   selectedCountry: string;
@@ -19,8 +21,13 @@ export const CountryPicker: React.FC<CountryPickerProps> = ({
   isLoadingCountries,
   onCountryChange,
 }) => {
+  const handleCountryChange = async (countryCode: string) => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onCountryChange(countryCode);
+  };
+
   if (isLoadingCountries) {
-    return <ActivityIndicator size="large" color="#007AFF" style={countryPickerStyles.loadingIndicator} />;
+    return <ActivityIndicator size="large" color={colors.primary.start} style={countryPickerStyles.loadingIndicator} />;
   }
 
   return (
@@ -29,7 +36,7 @@ export const CountryPicker: React.FC<CountryPickerProps> = ({
       <View style={countryPickerStyles.pickerContainer}>
         <Picker
           selectedValue={selectedCountry}
-          onValueChange={onCountryChange}
+          onValueChange={handleCountryChange}
           style={countryPickerStyles.picker}
           enabled={!isLoading}
         >

@@ -1,14 +1,19 @@
 import { StyleSheet } from 'react-native';
+import { colors, spacing, typography, shadows, borderRadius } from '../theme/tokens';
 
 export const qrCodeDisplayStyles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    backgroundColor: colors.surface.base,
+    borderRadius: borderRadius.md,
+    ...shadows.medium,
   },
   qrIdText: {
-    fontSize: 12,
-    color: '#999',
-    marginTop: 10,
+    fontSize: typography.size.xs,
+    color: colors.text.tertiary,
+    marginTop: spacing.md,
     textAlign: 'center',
   },
 });

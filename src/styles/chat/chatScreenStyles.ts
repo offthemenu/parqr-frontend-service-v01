@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { colors } from '../../theme/tokens';
+import { colors, spacing, typography } from '../../theme/tokens';
 
 export const chatScreenStyles = StyleSheet.create({
   container: {
@@ -13,34 +13,34 @@ export const chatScreenStyles = StyleSheet.create({
     backgroundColor: colors.surface.background,
   },
   loadingText: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: typography.size.base,
+    color: colors.text.secondary,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.surface.background,
-    paddingHorizontal: 20,
+    paddingHorizontal: spacing.lg,
   },
   errorText: {
-    fontSize: 16,
-    color: '#FF3B30',
+    fontSize: typography.size.base,
+    color: colors.notification.error,
     textAlign: 'center',
   },
   messagesList: {
     flex: 1,
-    backgroundColor: '#F8F8F8',
+    backgroundColor: colors.surface.elevated,
   },
   emptyState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 40,
+    paddingHorizontal: spacing.xxl,
   },
   emptyStateText: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: typography.size.base,
+    color: colors.text.secondary,
     textAlign: 'center',
     lineHeight: 24,
   },

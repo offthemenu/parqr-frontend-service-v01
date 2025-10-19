@@ -40,7 +40,7 @@ export class MoveRequestService {
             license_plate: licensePlate
         });
         
-        if (!response.data) {
+    if (!response.data) {
             throw new Error('Failed to create move request');
         }
     }

@@ -2,10 +2,12 @@ import React, { useState, useEffect} from "react";
 import { View, Text, FlatList, RefreshControl, TouchableOpacity, Alert } from "react-native";
 import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { RouteProp } from '@react-navigation/native';
+import * as Haptics from 'expo-haptics';
 import { MoveRequestService } from "../services/moveRequestService";
 import { parkOutHistoryStyles } from "../styles/parkOutHistoryStyles";
 import { formatLocalTime } from "../utils/timeUtils";
 import { MoveRequest, RootStackParamList } from "../types";
+import { colors } from "../theme/tokens";
 
 type ParkOutHistoryRouteProp = RouteProp<RootStackParamList, 'ParkOutHistory'>;
 
@@ -38,18 +40,27 @@ export const ParkOutHistoryScreen: React.FC<ParkOutHistoryScreenProps> = ({ navi
     };
 
     const handleRefresh = async () => {
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         setIsRefreshing(true);
         await fetchMoveRequests(false);
         setIsRefreshing(false);
     };
 
     const handleMarkAsRead = async (requestId: number) => {
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         try {
             await MoveRequestService.markAsRead(requestId);
+            await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             await fetchMoveRequests(false); // Refresh list
         } catch (error) {
+            await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
             Alert.alert("Error", "Failed to mark request as read")
         }
+    };
+
+    const handleFilterChange = async (filterType: typeof filter) => {
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        setFilter(filterType);
     };
 
     const getFilteredReqeusts = () => {
@@ -76,7 +87,7 @@ export const ParkOutHistoryScreen: React.FC<ParkOutHistoryScreenProps> = ({ navi
                 parkOutHistoryStyles.filterButton,
                 filter === filterType && parkOutHistoryStyles.filterButtonActive
             ]}
-            onPress={() => setFilter(filterType)}
+            onPress={() => handleFilterChange(filterType)}
         >
             <Text style={[
                 parkOutHistoryStyles.filterButtonText,
@@ -129,7 +140,7 @@ export const ParkOutHistoryScreen: React.FC<ParkOutHistoryScreenProps> = ({ navi
     if (isLoading) {
         return (
             <View style={parkOutHistoryStyles.centerContainer}>
-                <Text>Loading park-out history...</Text>
+                <Text style={parkOutHistoryStyles.loadingText}>Loading park-out history...</Text>
             </View>
         );
     }
@@ -154,8 +165,8 @@ export const ParkOutHistoryScreen: React.FC<ParkOutHistoryScreenProps> = ({ navi
                     <RefreshControl
                         refreshing={isRefreshing}
                         onRefresh={handleRefresh}
-                        colors={['#007AFF']}
-                        tintColor="#007AFF"
+                        colors={[colors.primary.start]}
+                        tintColor={colors.primary.start}
                     />
                 }
                 ListEmptyComponent={

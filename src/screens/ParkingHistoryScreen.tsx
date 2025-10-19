@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { 
+import {
     View,
     Text,
     FlatList,
@@ -7,10 +7,13 @@ import {
     TouchableOpacity
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { ParkingService } from "../services/parkingService";
 import { ParkingSession } from "../types";
 import { parkingHistoryStyles } from "../styles/parkingHistoryStyles";
 import { formatLocalTime, calculateParkingDuration } from "../utils/timeUtils";
+import { colors } from "../theme/tokens";
 
 interface ParkingHistoryScreenProps {
     navigation: any;
@@ -37,9 +40,15 @@ export const ParkingHistoryScreen: React.FC<ParkingHistoryScreenProps> = ({ navi
     };
 
     const handleRefresh = async () => {
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         setIsRefreshing(true);
         await fetchParkingSessions(false);
         setIsRefreshing(false);
+    };
+
+    const handleFilterChange = async (filterType: typeof filter) => {
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        setFilter(filterType);
     };
 
     const getFilteredSessions = () => {
@@ -66,7 +75,7 @@ export const ParkingHistoryScreen: React.FC<ParkingHistoryScreenProps> = ({ navi
                 parkingHistoryStyles.filterButton,
                 filter === filterType && parkingHistoryStyles.filterButtonActive
             ]}
-            onPress={() => setFilter(filterType)}
+            onPress={() => handleFilterChange(filterType)}
         >
             <Text style={[
                 parkingHistoryStyles.filterButtonText,
@@ -101,9 +110,12 @@ export const ParkingHistoryScreen: React.FC<ParkingHistoryScreenProps> = ({ navi
             )}
 
             {item.note_location && (
-                <Text style={parkingHistoryStyles.location}>
-                    📍 {item.note_location}
-                </Text>
+                <View style={parkingHistoryStyles.locationRow}>
+                    <Ionicons name="location" size={16} color={colors.primary.start} />
+                    <Text style={[parkingHistoryStyles.location, { marginLeft: 4, marginBottom: 0 }]}>
+                        {item.note_location}
+                    </Text>
+                </View>
             )}
 
             <Text style={parkingHistoryStyles.sessionId}>
@@ -115,7 +127,7 @@ export const ParkingHistoryScreen: React.FC<ParkingHistoryScreenProps> = ({ navi
     if (isLoading) {
         return (
             <View style={parkingHistoryStyles.centerContainer}>
-                <Text>Loading Parking History...</Text>
+                <Text style={parkingHistoryStyles.loadingText}>Loading Parking History...</Text>
             </View>
         );
     }
@@ -140,8 +152,8 @@ export const ParkingHistoryScreen: React.FC<ParkingHistoryScreenProps> = ({ navi
                     <RefreshControl
                         refreshing={isRefreshing}
                         onRefresh={handleRefresh}
-                        colors={['#007AFF']}
-                        tintColor="#007AFF"
+                        colors={[colors.primary.start]}
+                        tintColor={colors.primary.start}
                     />
                 }
                 ListEmptyComponent={

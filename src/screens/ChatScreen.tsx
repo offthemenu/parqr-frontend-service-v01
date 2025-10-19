@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { 
-  View, 
-  FlatList, 
-  KeyboardAvoidingView, 
+import {
+  View,
+  FlatList,
+  KeyboardAvoidingView,
   Platform,
   RefreshControl,
   Alert,
@@ -11,6 +11,7 @@ import {
 import { useRoute, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
+import * as Haptics from 'expo-haptics';
 import { RootStackParamList } from '../types';
 import { MessageBubble } from '../components/chat/MessageBubble';
 import { ChatInput } from '../components/chat/ChatInput';
@@ -18,6 +19,7 @@ import { useMessagePolling } from '../hooks/useMessagePolling';
 import { ChatService } from '../services/chatService';
 import { AuthService } from '../services/authService';
 import { chatScreenStyles } from '../styles/chat/chatScreenStyles';
+import { colors } from '../theme/tokens';
 
 type ChatScreenRouteProp = RouteProp<RootStackParamList, 'Chat'>;
 type ChatScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Chat'>;
@@ -40,10 +42,12 @@ export const ChatScreen: React.FC = () => {
         if (userCode) {
           setCurrentUserCode(userCode);
         } else {
+          await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
           Alert.alert('Error', 'Unable to identify current user');
           navigation.goBack();
         }
       } catch (error) {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         Alert.alert('Error', 'Authentication failed');
         navigation.goBack();
       } finally {
@@ -107,10 +111,15 @@ export const ChatScreen: React.FC = () => {
     }
   }, [messages.length]);
 
+  const handleRefresh = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    await refreshMessages();
+  };
+
   const handleSendMessage = async (messageContent: string) => {
     try {
       console.log('🚀 Sending message to', recipientUserCode, `(${messageContent.length} chars)`);
-      
+
       await ChatService.sendMessage({
         recipient_user_code: recipientUserCode,
         message_content: messageContent,
@@ -118,7 +127,8 @@ export const ChatScreen: React.FC = () => {
       });
 
       console.log('✅ Message sent successfully, refreshing in 1 second...');
-      
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
       // Message will appear through polling
       setTimeout(() => {
         console.log('🔄 Refreshing messages after send...');
@@ -126,6 +136,7 @@ export const ChatScreen: React.FC = () => {
       }, 1000); // Small delay to ensure backend processing
     } catch (error) {
       console.error('❌ Failed to send message:', error);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       throw error; // Let ChatInput handle the error display
     }
   };
@@ -185,8 +196,8 @@ export const ChatScreen: React.FC = () => {
         refreshControl={
           <RefreshControl
             refreshing={isLoading}
-            onRefresh={refreshMessages}
-            tintColor="#007AFF"
+            onRefresh={handleRefresh}
+            tintColor={colors.primary.start}
           />
         }
         onContentSizeChange={() => {

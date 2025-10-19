@@ -2,7 +2,10 @@
   "expo": {
     "name": "parQR",
     "slug": "parqr-frontend",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -17,13 +20,18 @@
     ],
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.parcodedev.parqr",
       "infoPlist": {
-        "NSCameraUsageDescription": "This app uses the camera to scan QR codes for user profiles."
+        "NSCameraUsageDescription": "This app uses the camera to scan QR codes for user profiles.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
+      "package": "com.parcodedev.parqr",
       "permissions": [
-        "CAMERA"
+        "CAMERA",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -41,6 +49,18 @@
           "cameraPermission": "Allow parQR to access your camera to scan QR codes."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "16e6c520-25ef-4268-8128-994787da967d"
+      }
+    },
+    "owner": "parcodedev",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/16e6c520-25ef-4268-8128-994787da967d"
+    }
   }
 }

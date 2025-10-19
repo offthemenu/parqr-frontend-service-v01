@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import * as Haptics from 'expo-haptics';
 import { RootStackParamList } from "../types";
 import { ParkingService } from "../services/parkingService";
 import { startParkingScreenStyles } from "../styles/startParkingScreenStyles";
@@ -46,10 +47,12 @@ export const StartParkingScreen: React.FC = () => {
 
     const handleStartParking = async () => {
         if (!isFormValid) {
+            await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
             Alert.alert("Error", "Please select a car before starting parking.");
             return;
         }
 
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         setIsLoading(true);
 
         try {
@@ -60,6 +63,7 @@ export const StartParkingScreen: React.FC = () => {
                 public_message: publicMessage.trim() || undefined
             });
 
+            await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             Alert.alert(
                 "Success",
                 "Parking session started successfully!",
@@ -72,6 +76,7 @@ export const StartParkingScreen: React.FC = () => {
             );
         } catch (error: any) {
             console.error("Error starting parking session:", error);
+            await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
             Alert.alert(
                 "Error",
                 error.response?.data?.detail || "Failed to start parking session. Please try again."
@@ -115,7 +120,10 @@ export const StartParkingScreen: React.FC = () => {
                                     startParkingScreenStyles.carOption,
                                     selectedCarId === car.id && startParkingScreenStyles.carOptionSelected
                                 ]}
-                                onPress={() => setSelectedCarId(car.id)}
+                                onPress={async () => {
+                                    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                    setSelectedCarId(car.id);
+                                }}
                             >
                                 <View style={startParkingScreenStyles.carOptionContent}>
                                     <Text style={startParkingScreenStyles.carBrand}>

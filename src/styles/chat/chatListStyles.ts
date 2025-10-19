@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { colors } from '../../theme/tokens';
+import { colors, spacing, borderRadius, typography } from '../../theme/tokens';
 
 export const chatListStyles = StyleSheet.create({
   container: {
@@ -13,36 +13,37 @@ export const chatListStyles = StyleSheet.create({
     backgroundColor: colors.surface.background,
   },
   loadingText: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: typography.size.base,
+    color: colors.text.secondary,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.surface.background,
-    paddingHorizontal: 20,
+    paddingHorizontal: spacing.lg,
   },
   errorText: {
-    fontSize: 16,
-    color: '#FF3B30',
+    fontSize: typography.size.base,
+    color: colors.notification.error,
     textAlign: 'center',
   },
   searchContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: '#F8F8F8',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    backgroundColor: colors.surface.elevated,
     borderBottomWidth: 0.5,
-    borderBottomColor: '#E5E5EA',
+    borderBottomColor: colors.border.light,
   },
   searchInput: {
     height: 36,
-    backgroundColor: 'white',
-    borderRadius: 18,
-    paddingHorizontal: 16,
-    fontSize: 16,
+    backgroundColor: colors.surface.base,
+    borderRadius: borderRadius.full,
+    paddingHorizontal: spacing.md,
+    fontSize: typography.size.base,
+    color: colors.text.primary,
     borderWidth: 1,
-    borderColor: '#E5E5EA',
+    borderColor: colors.border.light,
   },
   conversationsList: {
     flex: 1,
@@ -51,18 +52,18 @@ export const chatListStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 40,
+    paddingHorizontal: spacing.xxl,
   },
   emptyStateTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 8,
+    fontSize: typography.size.xl,
+    fontWeight: typography.weight.semibold,
+    color: colors.text.primary,
+    marginBottom: spacing.sm,
     textAlign: 'center',
   },
   emptyStateText: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: typography.size.base,
+    color: colors.text.secondary,
     textAlign: 'center',
     lineHeight: 24,
   },

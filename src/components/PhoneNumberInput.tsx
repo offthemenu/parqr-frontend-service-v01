@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { phoneInputStyles } from '../styles/phoneInputStyles';
+import { colors } from '../theme/tokens';
 
 interface PhoneNumberInputProps {
   phoneNumber: string;
@@ -23,6 +24,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
         value={phoneNumber}
         onChangeText={onPhoneNumberChange}
         placeholder={selectedCountry === 'KR' ? '010-1234-5678' : '(555) 123-4567'}
+        placeholderTextColor={colors.text.tertiary}
         keyboardType="phone-pad"
         maxLength={selectedCountry === 'KR' ? 13 : 14}
         editable={!isLoading}

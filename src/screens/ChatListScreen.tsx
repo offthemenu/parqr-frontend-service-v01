@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { 
-  View, 
-  FlatList, 
-  Text, 
+import {
+  View,
+  FlatList,
+  Text,
   TextInput,
   RefreshControl,
   Alert,
@@ -11,11 +11,13 @@ import {
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import * as Haptics from 'expo-haptics';
 import { RootStackParamList, ChatConversationResponse } from '../types';
 import { ConversationCard } from '../components/chat/ConversationCard';
 import { ChatService } from '../services/chatService';
 import { AuthService } from '../services/authService';
 import { chatListStyles } from '../styles/chat/chatListStyles';
+import { colors } from '../theme/tokens';
 
 type ChatListNavigationProp = StackNavigationProp<RootStackParamList, 'ChatList'>;
 
@@ -46,10 +48,12 @@ export const ChatListScreen: React.FC = () => {
         if (userCode) {
           setCurrentUserCode(userCode);
         } else {
+          await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
           Alert.alert('Error', 'Unable to identify current user');
         }
-        
+
       } catch (error) {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         Alert.alert('Error', 'Authentication failed');
       }
     };
@@ -192,11 +196,17 @@ export const ChatListScreen: React.FC = () => {
     }
   }, [conversations, searchQuery]);
 
-  const handleConversationPress = (conversation: Conversation) => {
+  const handleConversationPress = async (conversation: Conversation) => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     navigation.navigate('Chat', {
       recipientUserCode: conversation.participant_user_code,
       recipientDisplayName: conversation.participant_display_name || conversation.participant_user_code
     });
+  };
+
+  const handleRefresh = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    await fetchConversations(true);
   };
 
   const renderConversation = ({ item }: { item: Conversation }) => (
@@ -247,7 +257,7 @@ export const ChatListScreen: React.FC = () => {
         <TextInput
           style={chatListStyles.searchInput}
           placeholder="Search conversations..."
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.text.tertiary}
           value={searchQuery}
           onChangeText={setSearchQuery}
           autoCorrect={false}
@@ -263,8 +273,8 @@ export const ChatListScreen: React.FC = () => {
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}
-            onRefresh={() => fetchConversations(true)}
-            tintColor="#007AFF"
+            onRefresh={handleRefresh}
+            tintColor={colors.primary.start}
           />
         }
         ListEmptyComponent={

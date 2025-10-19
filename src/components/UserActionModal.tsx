@@ -7,6 +7,10 @@ import {
   StyleSheet,
   Dimensions
 } from 'react-native';
+import { BlurView } from 'expo-blur';
+import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
+import { colors, spacing, borderRadius, typography, shadows } from '../theme/tokens';
 
 interface UserActionModalProps {
   visible: boolean;
@@ -27,6 +31,16 @@ export const UserActionModal: React.FC<UserActionModalProps> = ({
   onRequestCarMove,
   onScanAgain
 }) => {
+  const handleAction = async (action: () => void) => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    action();
+  };
+
+  const handleScanAgain = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onScanAgain();
+  };
+
   return (
     <Modal
       visible={visible}
@@ -34,32 +48,48 @@ export const UserActionModal: React.FC<UserActionModalProps> = ({
       animationType="fade"
       onRequestClose={onClose}
     >
-      <View style={styles.overlay}>
+      <BlurView intensity={80} tint="dark" style={styles.overlay}>
         <View style={styles.modalContainer}>
           <Text style={styles.title}>User Found!</Text>
           <Text style={styles.subtitle}>
             Found {userCode}. What would you like to do?
           </Text>
-          
+
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.actionButton} onPress={onViewProfile}>
-              <Text style={styles.actionButtonText}>👤 View Profile</Text>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => handleAction(onViewProfile)}
+            >
+              <Ionicons name="person" size={20} color={colors.text.white} style={styles.icon} />
+              <Text style={styles.actionButtonText}>View Profile</Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.actionButton} onPress={onSendMessage}>
-              <Text style={styles.actionButtonText}>💬 Send Message</Text>
+
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => handleAction(onSendMessage)}
+            >
+              <Ionicons name="chatbubble" size={20} color={colors.text.white} style={styles.icon} />
+              <Text style={styles.actionButtonText}>Send Message</Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.actionButton} onPress={onRequestCarMove}>
-              <Text style={styles.actionButtonText}>🚗 Request Car Move</Text>
+
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => handleAction(onRequestCarMove)}
+            >
+              <Ionicons name="car" size={20} color={colors.text.white} style={styles.icon} />
+              <Text style={styles.actionButtonText}>Request Car Move</Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.scanAgainButton} onPress={onScanAgain}>
-              <Text style={styles.scanAgainButtonText}>📷 Scan Again</Text>
+
+            <TouchableOpacity
+              style={styles.scanAgainButton}
+              onPress={handleScanAgain}
+            >
+              <Ionicons name="qr-code" size={20} color={colors.text.secondary} style={styles.icon} />
+              <Text style={styles.scanAgainButtonText}>Scan Again</Text>
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </BlurView>
     </Modal>
   );
 };
@@ -69,66 +99,68 @@ const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: spacing.lg,
   },
   modalContainer: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 24,
+    backgroundColor: colors.surface.base,
+    borderRadius: borderRadius.lg,
+    padding: spacing.xl,
     width: width - 40,
     maxWidth: 320,
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    ...shadows.large,
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: typography.size.xl,
+    fontWeight: typography.weight.bold,
     textAlign: 'center',
-    marginBottom: 8,
-    color: '#333',
+    marginBottom: spacing.sm,
+    color: colors.text.primary,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: typography.size.base,
     textAlign: 'center',
-    marginBottom: 24,
-    color: '#666',
+    marginBottom: spacing.xl,
+    color: colors.text.secondary,
     lineHeight: 22,
   },
   buttonContainer: {
-    gap: 12,
+    gap: spacing.md,
   },
   actionButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    backgroundColor: colors.primary.start,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    borderRadius: borderRadius.md,
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    ...shadows.small,
   },
   actionButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    color: colors.text.white,
+    fontSize: typography.size.base,
+    fontWeight: typography.weight.semibold,
   },
   scanAgainButton: {
-    backgroundColor: '#f0f0f0',
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    backgroundColor: colors.surface.elevated,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    borderRadius: borderRadius.md,
     alignItems: 'center',
-    marginTop: 8,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.border.light,
   },
   scanAgainButtonText: {
-    color: '#666',
-    fontSize: 16,
-    fontWeight: '600',
+    color: colors.text.secondary,
+    fontSize: typography.size.base,
+    fontWeight: typography.weight.semibold,
+  },
+  icon: {
+    marginRight: spacing.sm,
   },
 });
