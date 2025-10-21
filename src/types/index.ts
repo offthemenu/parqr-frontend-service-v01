@@ -67,6 +67,8 @@ export interface UserWithCarsResponse {
   profile_bio?: string;
   profile_display_name?: string;
   qr_image_path?: string;
+  parking_status?: "active" | "not_parked";
+  public_message?: string;
 }
 
 export interface UserLookupResponse {

@@ -129,7 +129,9 @@ export default function App() {
           name="PublicProfile" 
           component={PublicProfileScreen}
           options={{ 
-            title: 'User Profile'
+            title: 'User Profile',
+            headerLeft: () => null,
+            gestureEnabled: false
           }}
         />
         <Stack.Screen 

@@ -5,6 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+
 import { RootStackParamList } from '../types';
 import { publicProfileStyles } from '../styles/publicProfileStyles';
 import { ChatService } from '../services/chatService';
@@ -12,7 +13,10 @@ import { MoveRequestService } from '../services/moveRequestService';
 import { ParkingService } from '../services/parkingService';
 import { ParkingSession } from '../types';
 import { formatLocalTime, calculateParkingDuration } from '../utils/timeUtils';
+
 import { colors } from '../theme/tokens';
+import { ParkingStatusBadge } from '../components/profile/ParkingStatusBadge';
+import { PublicMessageCard } from '../components/profile/PublicMessageCard';
 
 type PublicProfileScreenRouteProp = RouteProp<RootStackParamList, 'PublicProfile'>;
 type PublicProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'PublicProfile'>;
@@ -25,9 +29,22 @@ export const PublicProfileScreen: React.FC = () => {
   const [parkingHistory, setParkingHistory] = useState<ParkingSession[]>([]);
   const [activeSession, setActiveSession] = useState<ParkingSession | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const userTier = user?.user_tier || 'basic';
+  const canAccessChat = userTier === "premium";
 
   const handleSendChat = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+    if (!canAccessChat) {
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      Alert.alert(
+        "Premium Feature",
+        "Upgrade to Premiuum to send direct messages.", [{ text: "OK" }]
+      );
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -145,6 +162,13 @@ export const PublicProfileScreen: React.FC = () => {
     }
   };
 
+  const handleManualRefresh = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setIsRefreshing(true);
+    await fetchParkingData();
+    setIsRefreshing(false);
+  };
+
   // Load parking data when component mounts
   useEffect(() => {
     if (userCode) {
@@ -154,7 +178,12 @@ export const PublicProfileScreen: React.FC = () => {
 
   const handleCloseProfile = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    navigation.goBack();
+    if (user) {
+      navigation.navigate("Home", { user });
+    } else {
+      navigation.goBack();
+    }
+
   };
 
   // Get the first registered car (primary car)
@@ -164,12 +193,26 @@ export const PublicProfileScreen: React.FC = () => {
     <SafeAreaView style={publicProfileStyles.container}>
       {/* Close Button (In-App Only) */}
       {!isWebView && (
-        <TouchableOpacity
-          style={publicProfileStyles.closeButton}
-          onPress={handleCloseProfile}
-        >
-          <Ionicons name="close" size={24} color={colors.text.primary} />
-        </TouchableOpacity>
+        <>
+          <TouchableOpacity
+            style={publicProfileStyles.closeButton}
+            onPress={handleCloseProfile}
+          >
+            <Ionicons name="close" size={24} color={colors.text.primary} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={publicProfileStyles.refreshButton}
+            onPress={handleManualRefresh}
+            disabled={isRefreshing}
+          >
+            <Ionicons
+              name="refresh"
+              size={24}
+              color={isRefreshing ? colors.text.tertiary : colors.text.primary}
+            />
+          </TouchableOpacity>
+        </>
       )}
 
       {/* Content Container */}
@@ -190,10 +233,16 @@ export const PublicProfileScreen: React.FC = () => {
             <View style={publicProfileStyles.carSection}>
               <Text style={publicProfileStyles.carBrand}>{primaryCar.car_brand}</Text>
               <Text style={publicProfileStyles.carModel}>{primaryCar.car_model}</Text>
+
+              {/* NEW: Parking Status Badge */}
+              <ParkingStatusBadge parkingStatus={userData.parking_status} />
             </View>
           ) : (
             <View style={publicProfileStyles.carSection}>
               <Text style={publicProfileStyles.noCarText}>No vehicle registered</Text>
+
+              {/* NEW: Parking Status Badge (even if no car) */}
+              <ParkingStatusBadge parkingStatus={userData.parking_status} />
             </View>
           )}
 
@@ -204,13 +253,11 @@ export const PublicProfileScreen: React.FC = () => {
             console.log('🎨 Should render:', !!activeSession?.public_message);
             return null;
           })()}
-          {activeSession?.public_message && (
-            <View style={publicProfileStyles.publicMessageSection}>
-              <Text style={publicProfileStyles.publicMessageLabel}>Message from driver:</Text>
-              <Text style={publicProfileStyles.publicMessageText}>
-                {activeSession.public_message}
-              </Text>
-            </View>
+          {userData.parking_status === "active" && userData.public_message && (
+            <PublicMessageCard
+              publicMessage={userData.public_message}
+              startTime={undefined} // We don't have start time in userData, backend needs to add it
+            />
           )}
 
           {/* Parking History Section */}

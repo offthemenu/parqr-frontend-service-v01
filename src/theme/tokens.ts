@@ -44,6 +44,8 @@ export const colors = {
   notification: {
     error: '#D84339',          // Warmer red
     success: '#009777',        // Using primary green for success
+    successLight: '#82cdbdff',
+    successDark: '#009777',
     warning: '#E89B3C',        // Warm orange
     info: '#009777',           // Using primary for info
   },

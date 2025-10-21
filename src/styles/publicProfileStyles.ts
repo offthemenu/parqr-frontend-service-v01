@@ -30,6 +30,10 @@ export const publicProfileStyles = StyleSheet.create({
     color: colors.text.secondary,
     textTransform: 'capitalize',
   },
+  parkingSection: {
+    marginTop: 16,
+    marginBottom: 16
+  },
   publicMessage: {
     fontSize: typography.size.md,
     marginTop: spacing.sm,
@@ -90,6 +94,19 @@ export const publicProfileStyles = StyleSheet.create({
     position: 'absolute',
     top: 50,
     left: spacing.lg,
+    width: 40,
+    height: 40,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.surface.darkGlass,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+    ...shadows.small,
+  },
+  refreshButton: {
+    position: 'absolute',
+    top: 50,
+    right: spacing.lg,
     width: 40,
     height: 40,
     borderRadius: borderRadius.full,
